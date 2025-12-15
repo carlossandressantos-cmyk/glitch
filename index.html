@@ -7,29 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* TEMA DREAM / GLITCH */
+        /* TEMA NEUTRO / MODERN */
         :root {
-            --color-primary: #8b5cf6; /* Violet */
-            --color-secondary: #ec4899; /* Pink */
-            --color-accent: #06b6d4; /* Cyan */
+            --color-primary: #475569; /* Slate 600 */
+            --color-secondary: #94a3b8; /* Slate 400 */
+            --color-accent: #0ea5e9; /* Sky 500 */
         }
 
         body { 
             font-family: 'Quicksand', sans-serif; 
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
-            color: #4c1d95;
+            /* Fundo Neutro Gradiente Suave */
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            color: #1e293b;
             overflow-x: hidden;
         }
 
         .title-font { font-family: 'Fredoka', sans-serif; }
 
-        /* Efeito de Vidro (Glassmorphism) */
+        /* Efeito de Vidro (Glassmorphism) Neutro */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border-radius: 24px;
         }
 
@@ -60,7 +61,7 @@
             overflow: hidden;
             border: 4px solid white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            background-color: #f3e8ff;
+            background-color: #f1f5f9; /* Slate 100 */
         }
         .card-dream:hover {
             transform: translateY(-8px) rotate(2deg);
@@ -70,7 +71,7 @@
         .card-selected {
             border-color: var(--color-accent);
             transform: scale(1.05);
-            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.3);
         }
 
         /* Tabuleiro (Trilha) */
@@ -91,7 +92,7 @@
             position: relative;
         }
         .board-step.active {
-            background: #d8b4fe;
+            background: #64748b; /* Slate 500 */
             color: white;
             font-weight: bold;
         }
@@ -111,8 +112,9 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* Botão Neutro Escuro */
         .btn-primary {
-            background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);
+            background: linear-gradient(90deg, #475569 0%, #1e293b 100%); /* Slate Gradient */
             color: white;
             font-weight: bold;
             border-radius: 12px;
@@ -126,56 +128,56 @@
     <!-- HEADER COM LOGO -->
     <header class="w-full max-w-4xl flex flex-col items-center mb-4 mt-2">
         <div class="glitch-effect mb-2">
-            <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md">
+            <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md grayscale hover:grayscale-0 transition-all duration-500">
         </div>
-        <div class="text-sm font-bold text-purple-400 tracking-widest uppercase bg-white/50 px-3 py-1 rounded-full">Edição Sonho Ilustrado</div>
+        <div class="text-sm font-bold text-slate-500 tracking-widest uppercase bg-white/50 px-3 py-1 rounded-full border border-slate-200">Edição Sonho Ilustrado</div>
     </header>
 
     <main id="game-app" class="w-full max-w-5xl min-h-[600px] relative pb-20">
         
         <div id="msg-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm hidden">
             <div class="glass-panel p-8 text-center max-w-md animate-bounce-in">
-                <h3 id="msg-title" class="text-2xl title-font font-bold text-purple-600 mb-2">Carregando...</h3>
-                <p id="msg-body" class="text-gray-600">Sincronizando sonhos...</p>
+                <h3 id="msg-title" class="text-2xl title-font font-bold text-slate-700 mb-2">Carregando...</h3>
+                <p id="msg-body" class="text-slate-500">Sincronizando sonhos...</p>
             </div>
         </div>
 
         <!-- TELA DE LOGIN -->
         <div id="screen-login" class="glass-panel max-w-md mx-auto p-8 fade-in">
-            <h2 class="text-2xl title-font text-center mb-6 text-purple-800">Quem é você no sonho?</h2>
+            <h2 class="text-2xl title-font text-center mb-6 text-slate-800">Quem é você no sonho?</h2>
 
             <div class="mb-6">
-                <label class="block text-sm font-bold mb-3 text-gray-500 text-center">ESCOLHA SEU PEÃO</label>
+                <label class="block text-sm font-bold mb-3 text-slate-400 text-center">ESCOLHA SEU PEÃO</label>
                 <div id="avatar-grid" class="flex justify-center gap-4 flex-wrap">
                 </div>
             </div>
 
             <div class="mb-4">
-                <input type="text" id="player-name" class="w-full bg-white/50 border-2 border-purple-200 rounded-xl p-3 text-center text-lg focus:outline-none focus:border-pink-400 transition-colors" placeholder="Seu Nome" maxlength="12">
+                <input type="text" id="player-name" class="w-full bg-white border-2 border-slate-200 rounded-xl p-3 text-center text-lg focus:outline-none focus:border-slate-400 transition-colors text-slate-700" placeholder="Seu Nome" maxlength="12">
             </div>
 
             <div class="flex gap-2 mb-6">
-                <input type="text" id="room-code" class="w-2/3 bg-white/50 border-2 border-purple-200 rounded-xl p-3 text-center uppercase tracking-widest font-mono" placeholder="SALA" maxlength="4">
-                <button onclick="generateRoomCode()" class="w-1/3 bg-purple-100 text-purple-600 rounded-xl font-bold hover:bg-purple-200">Gerar</button>
+                <input type="text" id="room-code" class="w-2/3 bg-white border-2 border-slate-200 rounded-xl p-3 text-center uppercase tracking-widest font-mono text-slate-700" placeholder="SALA" maxlength="4">
+                <button onclick="generateRoomCode()" class="w-1/3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 border border-slate-200">Gerar</button>
             </div>
 
-            <button onclick="joinGame()" class="w-full btn-primary py-4 text-xl shadow-lg shadow-purple-500/30">
+            <button onclick="joinGame()" class="w-full btn-primary py-4 text-xl shadow-lg shadow-slate-500/20">
                 CONECTAR ⚡
             </button>
         </div>
 
         <!-- LOBBY -->
         <div id="screen-lobby" class="hidden glass-panel w-full p-6 flex flex-col items-center">
-            <div class="bg-white/50 px-6 py-2 rounded-full border border-purple-200 mb-6">
-                <span class="text-gray-500 text-xs uppercase font-bold mr-2">Código da Sala</span>
-                <span id="lobby-code" class="text-2xl font-mono font-bold text-purple-600 tracking-widest">----</span>
+            <div class="bg-white px-6 py-2 rounded-full border border-slate-200 mb-6 shadow-sm">
+                <span class="text-slate-400 text-xs uppercase font-bold mr-2">Código da Sala</span>
+                <span id="lobby-code" class="text-2xl font-mono font-bold text-slate-700 tracking-widest">----</span>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-8" id="lobby-list">
             </div>
 
-            <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-center max-w-lg mb-6">
-                <p class="text-yellow-800 text-sm">
+            <div class="bg-gray-100 p-4 rounded-xl border border-gray-200 text-center max-w-lg mb-6">
+                <p class="text-gray-600 text-sm">
                     <strong>Como Jogar:</strong> Todos recebem um tema, menos um (o Glitch).<br>
                     Jogue uma carta que combine. Descubra quem não sabe o tema!
                 </p>
@@ -184,7 +186,7 @@
             <button onclick="startGame()" id="btn-start" class="btn-primary py-3 px-12 text-lg shadow-lg hidden">
                 INICIAR JORNADA
             </button>
-            <p id="wait-host-msg" class="text-gray-400 animate-pulse">Aguardando o anfitrião iniciar...</p>
+            <p id="wait-host-msg" class="text-slate-400 animate-pulse">Aguardando o anfitrião iniciar...</p>
         </div>
 
         <!-- TELA DO JOGO -->
@@ -192,7 +194,7 @@
             
             <!-- TRILHA -->
             <div class="glass-panel p-3 w-full relative overflow-hidden">
-                <div class="absolute top-0 left-0 bg-purple-100 px-2 py-1 text-[10px] font-bold text-purple-800 rounded-br-lg z-10">TRILHA DOS SONHOS (30)</div>
+                <div class="absolute top-0 left-0 bg-slate-200 px-2 py-1 text-[10px] font-bold text-slate-600 rounded-br-lg z-10">TRILHA DOS SONHOS (30)</div>
                 <div id="game-board-track" class="board-track mt-4 md:mt-2">
                 </div>
             </div>
@@ -201,27 +203,27 @@
                 
                 <!-- ÁREA DE INFORMAÇÃO SECRETA -->
                 <div class="glass-panel p-6 flex-1 text-center flex flex-col justify-center items-center min-h-[150px] relative overflow-hidden group">
-                    <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Sua Informação</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-widest mb-1">Sua Informação</div>
                     
                     <div id="secret-container" class="relative w-full">
-                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-gray-800">...</h2>
+                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-slate-800">...</h2>
                     </div>
 
-                    <div class="mt-2 text-xs text-purple-400 font-bold" id="role-hint"></div>
+                    <div class="mt-2 text-xs text-slate-500 font-bold" id="role-hint"></div>
                 </div>
 
                 <!-- INFO DECK E PLACAR -->
                 <div class="glass-panel p-4 w-full md:w-1/3 flex gap-2">
-                    <div class="w-1/3 flex flex-col items-center justify-center border-r border-gray-200 pr-2">
-                        <span class="text-[10px] font-bold text-gray-400 mb-1">BARALHO</span>
-                        <div class="card-dream w-16 h-20 md:w-20 md:h-24 relative shadow-inner">
+                    <div class="w-1/3 flex flex-col items-center justify-center border-r border-slate-200 pr-2">
+                        <span class="text-[10px] font-bold text-slate-400 mb-1">BARALHO</span>
+                        <div class="card-dream w-16 h-20 md:w-20 md:h-24 relative shadow-inner grayscale">
                             <img id="deck-back-img" src="" class="w-full h-full object-cover opacity-80" alt="Deck">
                             <div id="deck-count" class="absolute inset-0 flex items-center justify-center font-bold text-white text-xl drop-shadow-md">?</div>
                         </div>
                     </div>
                     <div class="w-2/3 overflow-y-auto max-h-[150px] pl-2">
-                        <h4 class="text-xs font-bold text-gray-400 uppercase mb-2">Viajantes</h4>
-                        <ul id="ingame-scoreboard" class="space-y-2 text-sm"></ul>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Viajantes</h4>
+                        <ul id="ingame-scoreboard" class="space-y-2 text-sm text-slate-700"></ul>
                     </div>
                 </div>
             </div>
@@ -230,7 +232,7 @@
                 
                 <!-- MESA (CARTAS JOGADAS) -->
                 <div id="table-area" class="mb-6">
-                    <h3 class="text-center text-purple-800 font-bold mb-4 bg-white/30 inline-block px-4 py-1 rounded-full mx-auto block w-max">
+                    <h3 class="text-center text-slate-600 font-bold mb-4 bg-white/50 border border-white inline-block px-4 py-1 rounded-full mx-auto block w-max shadow-sm">
                         MEMÓRIAS COMPARTILHADAS
                     </h3>
                     <div id="table-grid" class="flex flex-wrap justify-center gap-4">
@@ -238,21 +240,21 @@
                 </div>
 
                 <!-- MÃO DO JOGADOR -->
-                <div id="hand-area" class="glass-panel p-4 bg-white/80 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300">
+                <div id="hand-area" class="glass-panel p-4 bg-white/95 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300 border-t border-slate-200">
                     <div class="flex justify-between items-center mb-2">
-                        <div class="text-sm font-bold text-gray-600">Sua Mão</div>
-                        <button onclick="toggleHand()" class="md:hidden text-xs bg-gray-200 px-2 py-1 rounded">▼/▲</button>
+                        <div class="text-sm font-bold text-slate-600">Sua Mão</div>
+                        <button onclick="toggleHand()" class="md:hidden text-xs bg-slate-200 px-2 py-1 rounded text-slate-600">▼/▲</button>
                     </div>
                     <div id="hand-grid" class="flex gap-3 overflow-x-auto pb-2 px-1 snap-x justify-center md:justify-start">
                     </div>
-                    <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-full mt-2 bg-gray-300 text-white font-bold py-3 rounded-xl transition-colors">
+                    <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-full mt-2 bg-slate-300 text-white font-bold py-3 rounded-xl transition-colors">
                         JOGAR CARTA
                     </button>
                 </div>
 
                 <!-- VOTAÇÃO (Agora no fluxo da página, sem sobreposição) -->
-                <div id="voting-overlay" class="w-full flex flex-col items-center justify-center hidden mt-8 p-6 bg-white/90 rounded-2xl border-4 border-red-300 shadow-xl mb-48">
-                    <h2 class="text-3xl title-font font-bold text-red-500 mb-6 glitch-text">QUEM É O GLITCH?</h2>
+                <div id="voting-overlay" class="w-full flex flex-col items-center justify-center hidden mt-8 p-6 bg-white/95 rounded-2xl border-2 border-red-200 shadow-xl mb-48">
+                    <h2 class="text-3xl title-font font-bold text-red-600 mb-6 glitch-text">QUEM É O GLITCH?</h2>
                     <div id="voting-options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     </div>
                 </div>
@@ -303,16 +305,16 @@
 
         // Avatares
         const AVATARS = [
-            { id: 'cloud', icon: '☁️', color: 'bg-blue-200' },
-            { id: 'star', icon: '⭐', color: 'bg-yellow-200' },
-            { id: 'bolt', icon: '⚡', color: 'bg-yellow-400' },
-            { id: 'heart', icon: '❤️', color: 'bg-red-200' },
-            { id: 'moon', icon: '🌙', color: 'bg-purple-200' },
-            { id: 'eye', icon: '👁️', color: 'bg-green-200' },
+            { id: 'cloud', icon: '☁️', color: 'bg-blue-100' },
+            { id: 'star', icon: '⭐', color: 'bg-yellow-100' },
+            { id: 'bolt', icon: '⚡', color: 'bg-yellow-200' },
+            { id: 'heart', icon: '❤️', color: 'bg-red-100' },
+            { id: 'moon', icon: '🌙', color: 'bg-slate-200' },
+            { id: 'eye', icon: '👁️', color: 'bg-green-100' },
             { id: 'ghost', icon: '👻', color: 'bg-gray-200' },
-            { id: 'alien', icon: '👽', color: 'bg-green-400' },
-            { id: 'robot', icon: '🤖', color: 'bg-blue-400' },
-            { id: 'fox', icon: '🦊', color: 'bg-orange-300' }
+            { id: 'alien', icon: '👽', color: 'bg-green-200' },
+            { id: 'robot', icon: '🤖', color: 'bg-blue-200' },
+            { id: 'fox', icon: '🦊', color: 'bg-orange-200' }
         ];
 
         // --- INICIALIZAÇÃO ---
@@ -338,7 +340,7 @@
         function renderAvatars() {
             const grid = document.getElementById('avatar-grid');
             grid.innerHTML = AVATARS.map(av => `
-                <button onclick="selectAvatar('${av.id}')" class="w-10 h-10 md:w-12 md:h-12 rounded-full text-xl flex items-center justify-center border-2 transition-transform hover:scale-110 ${myAvatar.id === av.id ? 'border-purple-600 scale-110 shadow-lg' : 'border-transparent bg-white'}" style="background-color: ${av.id === myAvatar.id ? '' : '#fff'}">
+                <button onclick="selectAvatar('${av.id}')" class="w-10 h-10 md:w-12 md:h-12 rounded-full text-xl flex items-center justify-center border-2 transition-transform hover:scale-110 ${myAvatar.id === av.id ? 'border-slate-500 scale-110 shadow-lg' : 'border-transparent bg-white'}" style="background-color: ${av.id === myAvatar.id ? '' : '#fff'}">
                     ${av.icon}
                 </button>
             `).join('');
@@ -439,8 +441,8 @@
             list.innerHTML = data.players.map(p => `
                 <div class="flex flex-col items-center bg-white/60 p-3 rounded-xl border border-white">
                     <div class="text-3xl mb-1">${p.avatar.icon}</div>
-                    <div class="font-bold text-sm text-purple-900">${p.name}</div>
-                    ${p.isHost ? '<span class="text-[10px] bg-yellow-200 px-1 rounded">HOST</span>' : ''}
+                    <div class="font-bold text-sm text-slate-800">${p.name}</div>
+                    ${p.isHost ? '<span class="text-[10px] bg-yellow-100 text-yellow-800 px-1 rounded border border-yellow-200">HOST</span>' : ''}
                 </div>
             `).join('');
 
@@ -520,20 +522,20 @@
             } else if (data.phase === 'scoring') {
                  secretContainer.innerText = data.currentWord;
                  roleHint.innerText = data.resultMsg || "Rodada encerrada.";
-                 secretContainer.classList.remove('text-red-500', 'glitch-text');
-                 secretContainer.className = "text-3xl font-bold text-purple-700";
+                 secretContainer.classList.remove('text-red-600', 'glitch-text');
+                 secretContainer.className = "text-3xl font-bold text-slate-800";
             } else {
                 // Durante o jogo
                 if (isGlitch) {
                     secretContainer.innerHTML = "ERRO 404<br><span class='text-sm'>VOCÊ É O GLITCH</span>";
-                    secretContainer.className = "text-4xl title-font font-bold text-red-500 glitch-text leading-none";
+                    secretContainer.className = "text-4xl title-font font-bold text-red-600 glitch-text leading-none";
                     roleHint.innerText = "Disfarce! Jogue uma carta genérica.";
-                    secretBox.parentElement.classList.add('border-red-400', 'bg-red-50');
+                    secretBox.parentElement.classList.add('border-red-200', 'bg-red-50');
                 } else {
                     secretContainer.innerText = data.currentWord;
-                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-purple-700";
+                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-slate-800";
                     roleHint.innerText = "Jogue uma carta relacionada ao tema.";
-                    secretBox.parentElement.classList.remove('border-red-400', 'bg-red-50');
+                    secretBox.parentElement.classList.remove('border-red-200', 'bg-red-50');
                 }
             }
 
@@ -556,11 +558,11 @@
             if (data.phase === 'playing' && !alreadyPlayed) {
                 btnPlay.disabled = false;
                 btnPlay.innerText = "JOGAR CARTA";
-                btnPlay.className = "w-full mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg";
+                btnPlay.className = "w-full mt-2 bg-gradient-to-r from-slate-600 to-slate-800 text-white font-bold py-3 rounded-xl shadow-lg";
             } else if (alreadyPlayed) {
                 btnPlay.disabled = true;
                 btnPlay.innerText = "AGUARDANDO OUTROS...";
-                btnPlay.className = "w-full mt-2 bg-gray-300 text-white font-bold py-3 rounded-xl";
+                btnPlay.className = "w-full mt-2 bg-slate-300 text-white font-bold py-3 rounded-xl";
             } else {
                 btnPlay.classList.add('hidden'); // Esconde no final
             }
@@ -602,7 +604,7 @@
                     if (p.score === i || (p.score > 30 && i === 30)) {
                         const pawn = document.createElement('div');
                         pawn.className = 'pawn flex items-center justify-center text-xs';
-                        pawn.style.backgroundColor = p.avatar.id === 'bolt' ? '#facc15' : '#e9d5ff';
+                        pawn.style.backgroundColor = p.avatar.id === 'bolt' ? '#facc15' : '#e2e8f0';
                         pawn.innerHTML = p.avatar.icon;
                         pawn.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
                         cell.appendChild(pawn);
@@ -670,14 +672,14 @@
             const container = document.getElementById('voting-options');
             
             if (data.votes[myId]) {
-                container.innerHTML = `<div class="col-span-3 text-center text-purple-800 bg-white/80 p-4 rounded-xl">Voto registrado! Aguardando o veredito...</div>`;
+                container.innerHTML = `<div class="col-span-3 text-center text-slate-800 bg-white/80 p-4 rounded-xl">Voto registrado! Aguardando o veredito...</div>`;
                 return;
             }
 
             container.innerHTML = data.players
                 .filter(p => p.id !== myId)
                 .map(p => `
-                <button onclick="submitVote('${p.id}')" class="flex flex-col items-center bg-white p-4 rounded-xl border-2 border-purple-100 hover:border-red-400 hover:bg-red-50 transition-all">
+                <button onclick="submitVote('${p.id}')" class="flex flex-col items-center bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-red-400 hover:bg-red-50 transition-all">
                     <div class="text-4xl mb-2">${p.avatar.icon}</div>
                     <span class="font-bold text-gray-700">${p.name}</span>
                 </button>
