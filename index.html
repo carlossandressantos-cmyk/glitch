@@ -57,21 +57,21 @@
         .card-dream {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 8px; /* Borda um pouco menor */
             overflow: hidden;
-            border: 4px solid white;
+            border: 3px solid white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             background-color: #eff6ff; /* Blue 50 */
         }
         .card-dream:hover {
-            transform: translateY(-8px) rotate(2deg);
-            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2);
+            transform: translateY(-4px) rotate(1deg);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
             z-index: 10;
         }
         .card-selected {
             border-color: var(--color-secondary);
             transform: scale(1.05);
-            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.4);
         }
 
         /* Tabuleiro (Trilha) com Imagem de Fundo */
@@ -94,16 +94,16 @@
         }
         .board-step {
             position: absolute; /* Importante para o posicionamento manual */
-            width: 4.5%; /* Tamanho relativo da casa ajustado */
+            width: 4%; /* Tamanho relativo da casa ajustado */
             aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.3); /* Transparente para ver o fundo */
+            background: rgba(255, 255, 255, 0.2); /* Transparente para ver o fundo */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.5rem;
             color: #1e3a8a;
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.4);
             backdrop-filter: blur(1px);
             transform: translate(-50%, -50%); /* Centraliza no ponto X,Y */
         }
@@ -130,9 +130,9 @@
         }
 
         /* Scrollbar Azulada */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
 
         /* Botão Azul Gradiente */
@@ -154,7 +154,7 @@
 
         /* Estilo para o menu de mão minimizado */
         .hand-minimized {
-            height: 60px !important; /* Altura apenas do cabeçalho */
+            height: 50px !important; /* Altura apenas do cabeçalho */
             overflow: hidden;
         }
         #hand-area {
@@ -285,25 +285,26 @@
                     </div>
                 </div>
 
-                <!-- MÃO DO JOGADOR -->
-                <div id="hand-area" class="glass-panel p-4 bg-white/95 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300 border-t border-blue-100 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="text-sm font-bold text-blue-600">Sua Mão <span class="text-xs font-normal text-gray-400 ml-2">(Clique duplo para ampliar)</span></div>
+                <!-- MÃO DO JOGADOR (REDUZIDA) -->
+                <div id="hand-area" class="glass-panel p-3 bg-white/95 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300 border-t border-blue-100 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="text-xs font-bold text-blue-600">Sua Mão <span class="font-normal text-gray-400 ml-1">(2x clique p/ zoom)</span></div>
                         <div class="flex gap-2">
-                            <button onclick="toggleHandVisibility()" id="btn-toggle-hand" class="text-xl text-blue-600 focus:outline-none transition-transform duration-300">▼</button>
+                            <button onclick="toggleHandVisibility()" id="btn-toggle-hand" class="text-lg text-blue-600 focus:outline-none transition-transform duration-300">▼</button>
                             <button onclick="toggleHand()" class="md:hidden text-xs bg-blue-100 px-2 py-1 rounded text-blue-600">◀▶</button>
                         </div>
                     </div>
                     <div id="hand-content">
-                        <div id="hand-grid" class="flex gap-3 overflow-x-auto pb-2 px-1 snap-x justify-center md:justify-start h-[170px]">
+                        <!-- Altura reduzida para cartões menores -->
+                        <div id="hand-grid" class="flex gap-2 overflow-x-auto pb-1 px-1 snap-x justify-center md:justify-start h-[120px]">
                         </div>
                         
-                        <div class="flex gap-2 mt-2">
-                            <button id="btn-zoom-card" onclick="openZoom()" disabled class="w-1/4 bg-blue-100 text-blue-600 font-bold py-3 rounded-xl transition-colors hover:bg-blue-200">
+                        <div class="flex gap-2 mt-1">
+                            <button id="btn-zoom-card" onclick="openZoom()" disabled class="w-1/4 bg-blue-100 text-blue-600 font-bold py-2 rounded-lg text-sm transition-colors hover:bg-blue-200">
                                 🔍
                             </button>
-                            <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl transition-colors">
-                                JOGAR CARTA
+                            <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-3/4 bg-slate-300 text-white font-bold py-2 rounded-lg text-sm transition-colors">
+                                JOGAR
                             </button>
                         </div>
                     </div>
@@ -319,13 +320,13 @@
             </div>
         </div>
 
-        <!-- MODAL DE ZOOM -->
+        <!-- MODAL DE ZOOM (Menor) -->
         <div id="zoom-modal" onclick="closeZoom()" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center hidden p-4">
-            <div class="relative max-w-lg w-full" onclick="event.stopPropagation()">
-                <button onclick="closeZoom()" class="absolute -top-12 right-0 text-white text-3xl font-bold hover:text-red-400">&times;</button>
-                <img id="zoom-img" src="" class="w-full h-auto rounded-2xl shadow-2xl border-4 border-white">
+            <div class="relative max-w-sm w-full bg-transparent" onclick="event.stopPropagation()">
+                <button onclick="closeZoom()" class="absolute -top-10 right-0 text-white text-2xl font-bold hover:text-red-400">&times;</button>
+                <img id="zoom-img" src="" class="w-full h-auto max-h-[60vh] object-contain rounded-xl shadow-2xl border-2 border-white mx-auto">
                 <div class="mt-4 flex justify-center">
-                    <button onclick="confirmPlayFromZoom()" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">
+                    <button onclick="confirmPlayFromZoom()" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform text-sm">
                         JOGAR ESTA CARTA
                     </button>
                 </div>
@@ -358,26 +359,29 @@
 
         document.getElementById('game-logo').src = getAssetUrl('logosite.png');
         document.getElementById('deck-back-img').src = getAssetUrl('verso-cartas.png');
-        // Define a imagem do tabuleiro na tag <img>
+        // Define a imagem do tabuleiro na tag <img> - Usando .png conforme solicitado
         document.getElementById('board-image').src = getAssetUrl('Tabuleiroglitch.png');
-        // Removido o background-image do container
 
         // === CONFIGURAÇÃO DA TRILHA (BOARD POSITIONS) ===
-        // Coordenadas percentuais (left%, top%) recalibradas para o caminho da imagem do tabuleiro
+        // Re-mapeamento para "S" clássico de tabuleiro (Baixo-Esq -> Topo-Dir)
         const BOARD_POSITIONS = [
-            // 1-5 (Início, baixo esquerda)
-            {l: 8, t: 86}, {l: 16, t: 85}, {l: 24, t: 84}, {l: 32, t: 83}, {l: 40, t: 82}, 
-            // 6-10 (Curva ascendente direita)
-            {l: 48, t: 81}, {l: 56, t: 80}, {l: 64, t: 78}, {l: 72, t: 75}, {l: 78, t: 70},
-            // 11-15 (Curva superior direita para esquerda)
-            {l: 82, t: 63}, {l: 78, t: 56}, {l: 70, t: 52}, {l: 62, t: 50}, {l: 54, t: 49},
-            // 16-20 (Meio, esquerda para direita)
-            {l: 46, t: 49}, {l: 38, t: 50}, {l: 30, t: 52}, {l: 22, t: 55}, {l: 16, t: 60},
-            // 21-25 (Curva inferior esquerda para cima)
-            {l: 12, t: 66}, {l: 14, t: 74}, {l: 20, t: 78}, {l: 28, t: 76}, {l: 36, t: 70},
-            // 26-30 (Final, topo direita)
-            {l: 44, t: 62}, {l: 52, t: 54}, {l: 60, t: 44}, {l: 70, t: 34}, {l: 82, t: 26}
+            // Linha 1: Baixo (Esquerda -> Direita)
+            {l: 6, t: 90}, {l: 15, t: 90}, {l: 24, t: 90}, {l: 33, t: 90}, {l: 42, t: 90}, 
+            {l: 51, t: 90}, {l: 60, t: 90}, {l: 69, t: 90}, {l: 78, t: 90}, {l: 88, t: 90},
+            
+            // Linha 2: Meio-Baixo (Direita -> Esquerda)
+            {l: 92, t: 73}, {l: 83, t: 73}, {l: 74, t: 73}, {l: 65, t: 73}, {l: 56, t: 73}, 
+            {l: 47, t: 73}, {l: 38, t: 73}, {l: 29, t: 73}, {l: 20, t: 73}, {l: 10, t: 73},
+
+            // Linha 3: Meio-Topo (Esquerda -> Direita)
+            {l: 8, t: 55}, {l: 17, t: 55}, {l: 26, t: 55}, {l: 35, t: 55}, {l: 44, t: 55},
+            {l: 53, t: 55}, {l: 62, t: 55}, {l: 71, t: 55}, {l: 80, t: 55}, {l: 90, t: 55},
+
+            // (Nota: Se o tabuleiro tiver apenas 30 casas, ajuste as linhas. 
+            // Se a imagem for diferente, altere estes valores manualmente).
         ];
+        
+        // Se precisar re-ajustar, altere os valores acima.
 
         // --- DADOS DO JOGO ---
         const TOTAL_CARDS = 127; 
@@ -625,18 +629,18 @@
             if (data.phase === 'playing' && !alreadyPlayed) {
                 btnPlay.disabled = !selectedCardId;
                 btnZoom.disabled = !selectedCardId; // Só habilita zoom se tiver carta
-                btnPlay.innerText = "JOGAR CARTA";
-                btnPlay.className = "w-3/4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:to-cyan-600";
+                btnPlay.innerText = "JOGAR";
+                btnPlay.className = "w-3/4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-2 rounded-lg text-sm shadow-lg hover:from-blue-700 hover:to-cyan-600";
                 
                 // Se não tem carta selecionada, estilo desabilitado
                 if(!selectedCardId) {
-                     btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl";
+                     btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-2 rounded-lg text-sm";
                 }
             } else if (alreadyPlayed) {
                 btnPlay.disabled = true;
                 btnZoom.disabled = true;
-                btnPlay.innerText = "AGUARDANDO OUTROS...";
-                btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl";
+                btnPlay.innerText = "ESPERANDO...";
+                btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-2 rounded-lg text-sm";
             } else {
                 btnPlay.classList.add('hidden');
                 btnZoom.classList.add('hidden');
@@ -668,9 +672,10 @@
             track.innerHTML = '';
             
             // Loop para criar as 30 casas usando as posições pré-definidas
-            for(let i=0; i<30; i++) {
-                const pos = BOARD_POSITIONS[i]; // Pega {l, t}
-                if (!pos) continue; // Segurança se faltar posição
+            // SE TIVER MAIS DE 30 POSICOES DEFINIDAS, AJUSTE O LOOP
+            for(let i=0; i<BOARD_POSITIONS.length && i<30; i++) {
+                const pos = BOARD_POSITIONS[i]; 
+                if (!pos) continue; 
 
                 const cellNum = i + 1;
                 const cell = document.createElement('div');
@@ -684,8 +689,6 @@
                 players.forEach(p => {
                     // Se o jogador passou de 30, fica na casa 30
                     const pScore = p.score > 30 ? 30 : p.score;
-                    // Se o jogador está na casa inicial (0), não mostra ou mostra na casa 1? 
-                    // Vamos considerar 0 como fora, 1 como primeira.
                     
                     if (pScore === cellNum) {
                         const pawn = document.createElement('div');
@@ -694,7 +697,7 @@
                         pawn.innerHTML = p.avatar.icon;
                         
                         // Pequeno deslocamento aleatório para não encavalar
-                        const offset = (Math.random() * 10) - 5;
+                        const offset = (Math.random() * 8) - 4;
                         pawn.style.transform = `translate(${offset}px, ${offset}px)`;
                         
                         cell.appendChild(pawn);
@@ -711,7 +714,7 @@
                 const fallback = "this.src='https://via.placeholder.com/150?text=Card'";
                 
                 return `
-                    <div onclick="selectCard(${id})" ondblclick="openZoom()" class="card-dream min-w-[100px] h-[140px] md:min-w-[120px] md:h-[160px] bg-gray-200 relative snap-center ${selectedCardId === id ? 'card-selected ring-4 ring-cyan-400' : ''}">
+                    <div onclick="selectCard(${id})" ondblclick="openZoom()" class="card-dream min-w-[70px] h-[100px] md:min-w-[90px] md:h-[130px] bg-gray-200 relative snap-center ${selectedCardId === id ? 'card-selected ring-2 ring-cyan-400' : ''}">
                         <img src="${imgUrl}" class="w-full h-full object-cover" onerror="${fallback}">
                     </div>
                 `;
