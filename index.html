@@ -250,8 +250,8 @@
                     </button>
                 </div>
 
-                <!-- VOTAÇÃO (Agora FIXED e Z-50 para cobrir tudo) -->
-                <div id="voting-overlay" class="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center hidden backdrop-blur-md">
+                <!-- VOTAÇÃO (Agora no fluxo da página, sem sobreposição) -->
+                <div id="voting-overlay" class="w-full flex flex-col items-center justify-center hidden mt-8 p-6 bg-white/90 rounded-2xl border-4 border-red-300 shadow-xl mb-48">
                     <h2 class="text-3xl title-font font-bold text-red-500 mb-6 glitch-text">QUEM É O GLITCH?</h2>
                     <div id="voting-options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     </div>
@@ -567,9 +567,18 @@
 
             // 7. Votação
             const votingOverlay = document.getElementById('voting-overlay');
+            const wasHidden = votingOverlay.classList.contains('hidden'); // Checa se estava escondido antes
+            
             if (data.phase === 'voting') {
                 votingOverlay.classList.remove('hidden');
                 renderVotingOptions(data);
+                
+                // Rola para baixo apenas se a votação acabou de aparecer
+                if (wasHidden) {
+                    setTimeout(() => {
+                        votingOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                }
             } else {
                 votingOverlay.classList.add('hidden');
             }
