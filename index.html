@@ -106,6 +106,7 @@
             border: 1px solid rgba(255,255,255,0.4);
             backdrop-filter: blur(1px);
             transform: translate(-50%, -50%); /* Centraliza no ponto X,Y */
+            user-select: none;
         }
         .board-step.active {
             background: rgba(59, 130, 246, 0.8); /* Blue 500 */
@@ -114,6 +115,18 @@
             border-color: #2563eb;
             z-index: 2;
         }
+        
+        /* Estilos do Modo de Edição */
+        .board-step.editing {
+            background: #facc15; /* Yellow */
+            color: black;
+            border: 2px solid black;
+            cursor: move;
+            z-index: 50;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
         .pawn {
             width: 130%; /* Peão um pouco maior que a casa */
             height: 130%;
@@ -165,12 +178,24 @@
 <body class="min-h-screen flex flex-col items-center p-4">
 
     <!-- HEADER COM LOGO -->
-    <header class="w-full max-w-4xl flex flex-col items-center mb-4 mt-2">
+    <header class="w-full max-w-4xl flex flex-col items-center mb-4 mt-2 relative">
         <div class="glitch-effect mb-2">
             <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md transition-all duration-500">
         </div>
         <div class="text-sm font-bold text-blue-600 tracking-widest uppercase bg-white/60 px-3 py-1 rounded-full border border-blue-200 shadow-sm">Edição Sonho Azul</div>
+        
+        <!-- Botão de Calibração -->
+        <button onclick="toggleEditMode()" class="absolute right-0 top-0 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded border border-gray-400">
+            🛠️ Ajustar Tabuleiro
+        </button>
     </header>
+    
+    <!-- Painel de Saída da Calibração -->
+    <div id="config-output-container" class="hidden w-full max-w-5xl mb-4 p-4 bg-yellow-100 border-2 border-yellow-400 rounded-xl">
+        <h3 class="text-sm font-bold text-yellow-800 mb-2">Modo de Calibração Ativo</h3>
+        <p class="text-xs text-yellow-700 mb-2">Arraste os números para as posições corretas na imagem. Copie o código abaixo e salve.</p>
+        <textarea id="config-output" class="w-full h-24 text-xs font-mono p-2 border rounded" readonly></textarea>
+    </div>
 
     <main id="game-app" class="w-full max-w-5xl min-h-[600px] relative pb-20">
         
@@ -233,7 +258,7 @@
             
             <!-- TRILHA / TABULEIRO -->
             <div class="glass-panel p-3 w-full relative overflow-hidden">
-                <div class="absolute top-0 left-0 bg-blue-600 px-3 py-1 text-[10px] font-bold text-white rounded-br-lg z-20 shadow-md">TRILHA (30)</div>
+                <div class="absolute top-0 left-0 bg-blue-600 px-3 py-1 text-[10px] font-bold text-white rounded-br-lg z-20 shadow-md">TRILHA (32)</div>
                 
                 <!-- Container do Tabuleiro com Imagem de Fundo -->
                 <div id="board-container" class="board-container mt-4 md:mt-2 border-2 border-white/50 relative">
@@ -359,29 +384,148 @@
 
         document.getElementById('game-logo').src = getAssetUrl('logosite.png');
         document.getElementById('deck-back-img').src = getAssetUrl('verso-cartas.png');
-        // Define a imagem do tabuleiro na tag <img> - Usando .png conforme solicitado
         document.getElementById('board-image').src = getAssetUrl('Tabuleiroglitch.png');
 
         // === CONFIGURAÇÃO DA TRILHA (BOARD POSITIONS) ===
-        // Re-mapeamento para "S" clássico de tabuleiro (Baixo-Esq -> Topo-Dir)
-        const BOARD_POSITIONS = [
-            // Linha 1: Baixo (Esquerda -> Direita)
-            {l: 6, t: 90}, {l: 15, t: 90}, {l: 24, t: 90}, {l: 33, t: 90}, {l: 42, t: 90}, 
-            {l: 51, t: 90}, {l: 60, t: 90}, {l: 69, t: 90}, {l: 78, t: 90}, {l: 88, t: 90},
-            
-            // Linha 2: Meio-Baixo (Direita -> Esquerda)
-            {l: 92, t: 73}, {l: 83, t: 73}, {l: 74, t: 73}, {l: 65, t: 73}, {l: 56, t: 73}, 
-            {l: 47, t: 73}, {l: 38, t: 73}, {l: 29, t: 73}, {l: 20, t: 73}, {l: 10, t: 73},
-
-            // Linha 3: Meio-Topo (Esquerda -> Direita)
-            {l: 8, t: 55}, {l: 17, t: 55}, {l: 26, t: 55}, {l: 35, t: 55}, {l: 44, t: 55},
-            {l: 53, t: 55}, {l: 62, t: 55}, {l: 71, t: 55}, {l: 80, t: 55}, {l: 90, t: 55},
-
-            // (Nota: Se o tabuleiro tiver apenas 30 casas, ajuste as linhas. 
-            // Se a imagem for diferente, altere estes valores manualmente).
+        // Posições ajustadas + 31 e 32
+        let BOARD_POSITIONS = [
+            {l: 57.5, t: 86.4}, // 1
+            {l: 68.1, t: 85.3}, // 2
+            {l: 76.3, t: 80.8}, // 3
+            {l: 79.9, t: 73}, // 4
+            {l: 76, t: 65.3}, // 5
+            {l: 67.5, t: 62.3}, // 6
+            {l: 58, t: 62.1}, // 7
+            {l: 50.7, t: 65.8}, // 8
+            {l: 43.9, t: 71.3}, // 9
+            {l: 36.5, t: 75.7}, // 10
+            {l: 25, t: 75}, // 11
+            {l: 18.9, t: 68.7}, // 12
+            {l: 20.3, t: 60.2}, // 13
+            {l: 26.5, t: 54.6}, // 14
+            {l: 35.6, t: 51.3}, // 15
+            {l: 43.7, t: 49.3}, // 16
+            {l: 51.9, t: 48.3}, // 17
+            {l: 60.3, t: 47.3}, // 18
+            {l: 69.1, t: 46.3}, // 19
+            {l: 78.2, t: 42.7}, // 20
+            {l: 81.5, t: 34.4}, // 21
+            {l: 78.6, t: 26.5}, // 22
+            {l: 71.1, t: 20.9}, // 23
+            {l: 61.4, t: 17.4}, // 24
+            {l: 52.1, t: 14.1}, // 25
+            {l: 42.7, t: 12.3}, // 26
+            {l: 32.9, t: 13.6}, // 27
+            {l: 23.7, t: 17}, // 28
+            {l: 19, t: 24.3}, // 29
+            {l: 22.9, t: 32.2}, // 30
+            {l: 31.5, t: 35.5}, // 31 (Novo)
+            {l: 40.0, t: 36.0}, // 32 (Novo)
         ];
         
-        // Se precisar re-ajustar, altere os valores acima.
+        // --- TOOL DE EDIÇÃO / CALIBRAÇÃO ---
+        let isEditing = false;
+        let dragItem = null;
+
+        window.toggleEditMode = () => {
+            isEditing = !isEditing;
+            const output = document.getElementById('config-output-container');
+            const track = document.getElementById('game-board-track');
+            
+            if (isEditing) {
+                // Ativa modo edição
+                output.classList.remove('hidden');
+                
+                // Renderiza até 32 passos para edição
+                track.innerHTML = '';
+                for (let i = 0; i < 32; i++) {
+                    let pos = BOARD_POSITIONS[i] || {l: 50, t: 50};
+                    const cell = document.createElement('div');
+                    cell.className = 'board-step editing'; // Classe especial amarela
+                    cell.innerText = i + 1;
+                    cell.style.left = pos.l + '%';
+                    cell.style.top = pos.t + '%';
+                    cell.dataset.index = i;
+                    
+                    // Eventos de Drag
+                    cell.onmousedown = startDrag;
+                    cell.ontouchstart = startDrag;
+                    
+                    track.appendChild(cell);
+                }
+                updateConfigOutput();
+                
+            } else {
+                // Sai do modo edição
+                output.classList.add('hidden');
+                // Re-renderiza o estado atual do jogo se existir
+                if (localState) renderGame(localState);
+            }
+        };
+
+        function startDrag(e) {
+            e.preventDefault();
+            dragItem = e.target;
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', onDrag, {passive: false});
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function onDrag(e) {
+            if (!dragItem) return;
+            e.preventDefault();
+            
+            const container = document.getElementById('board-container');
+            const rect = container.getBoundingClientRect();
+            
+            // Pega posição do mouse ou touch
+            let clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            let clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            
+            // Calcula posição relativa dentro do container
+            let x = clientX - rect.left;
+            let y = clientY - rect.top;
+            
+            // Converte para porcentagem
+            let l = (x / rect.width) * 100;
+            let t = (y / rect.height) * 100;
+            
+            // Limita entre 0 e 100%
+            l = Math.max(0, Math.min(100, l));
+            t = Math.max(0, Math.min(100, t));
+            
+            // Aplica visualmente
+            dragItem.style.left = l + '%';
+            dragItem.style.top = t + '%';
+            
+            // Atualiza array de dados em memória
+            const idx = parseInt(dragItem.dataset.index);
+            BOARD_POSITIONS[idx] = { l: parseFloat(l.toFixed(1)), t: parseFloat(t.toFixed(1)) };
+            
+            updateConfigOutput();
+        }
+
+        function endDrag() {
+            dragItem = null;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('touchend', endDrag);
+        }
+
+        function updateConfigOutput() {
+            const txt = document.getElementById('config-output');
+            let formatted = "let BOARD_POSITIONS = [\n";
+            for(let i=0; i<32; i++) {
+                let p = BOARD_POSITIONS[i] || {l:0, t:0};
+                formatted += `    {l: ${p.l}, t: ${p.t}}, // ${i+1}\n`;
+            }
+            formatted += "];";
+            txt.value = formatted;
+        }
+
 
         // --- DADOS DO JOGO ---
         const TOTAL_CARDS = 127; 
@@ -671,9 +815,11 @@
             const track = document.getElementById('game-board-track');
             track.innerHTML = '';
             
-            // Loop para criar as 30 casas usando as posições pré-definidas
-            // SE TIVER MAIS DE 30 POSICOES DEFINIDAS, AJUSTE O LOOP
-            for(let i=0; i<BOARD_POSITIONS.length && i<30; i++) {
+            // Se estiver em modo edição, não renderiza peões
+            if(isEditing) return;
+
+            // Loop para criar as 32 casas usando as posições pré-definidas
+            for(let i=0; i<BOARD_POSITIONS.length && i<32; i++) {
                 const pos = BOARD_POSITIONS[i]; 
                 if (!pos) continue; 
 
@@ -687,8 +833,8 @@
                 cell.style.top = pos.t + '%';
 
                 players.forEach(p => {
-                    // Se o jogador passou de 30, fica na casa 30
-                    const pScore = p.score > 30 ? 30 : p.score;
+                    // Se o jogador passou de 32, fica na casa 32
+                    const pScore = p.score > 32 ? 32 : p.score;
                     
                     if (pScore === cellNum) {
                         const pawn = document.createElement('div');
@@ -866,7 +1012,8 @@
                 }
             }
 
-            const winner = players.find(p => p.score >= 30);
+            // VITÓRIA ALTERADA PARA 32
+            const winner = players.find(p => p.score >= 32);
             const nextPhase = winner ? 'game_over' : 'scoring';
 
             if (winner) msg = `JOGO ACABOU! ${winner.name} VENCEU!`;
