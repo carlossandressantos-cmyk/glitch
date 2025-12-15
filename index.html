@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GLITCH - Edição Sonho Ilustrado</title>
+    <title>GLITCH - Edição Sonho Azul</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* TEMA NEUTRO / MODERN */
+        /* TEMA AZUL / ONÍRICO */
         :root {
-            --color-primary: #475569; /* Slate 600 */
-            --color-secondary: #94a3b8; /* Slate 400 */
-            --color-accent: #0ea5e9; /* Sky 500 */
+            --color-primary: #2563eb; /* Blue 600 */
+            --color-secondary: #06b6d4; /* Cyan 500 */
+            --color-accent: #4f46e5; /* Indigo 600 */
         }
 
         body { 
             font-family: 'Quicksand', sans-serif; 
-            /* Fundo Neutro Gradiente Suave */
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
-            color: #1e293b;
+            /* Gradiente Azulado Profundo */
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #e0e7ff 100%);
+            color: #1e3a8a;
             overflow-x: hidden;
         }
 
         .title-font { font-family: 'Fredoka', sans-serif; }
 
-        /* Efeito de Vidro (Glassmorphism) Neutro */
+        /* Efeito de Vidro Azulado */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px 0 rgba(30, 58, 138, 0.15); /* Sombra azulada */
             border-radius: 24px;
         }
 
@@ -61,66 +61,105 @@
             overflow: hidden;
             border: 4px solid white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            background-color: #f1f5f9; /* Slate 100 */
+            background-color: #eff6ff; /* Blue 50 */
         }
         .card-dream:hover {
             transform: translateY(-8px) rotate(2deg);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2);
             z-index: 10;
         }
         .card-selected {
-            border-color: var(--color-accent);
+            border-color: var(--color-secondary);
             transform: scale(1.05);
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.4);
         }
 
-        /* Tabuleiro (Trilha) */
+        /* Tabuleiro (Trilha) com Imagem de Fundo */
+        .board-container {
+            width: 100%;
+            /* Removido aspect-ratio fixo para usar o da imagem */
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
         .board-track {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Removido grid, agora usa posicionamento absoluto */
         }
         .board-step {
+            position: absolute; /* Importante para o posicionamento manual */
+            width: 4.5%; /* Tamanho relativo da casa ajustado */
             aspect-ratio: 1;
-            background: white;
+            background: rgba(255, 255, 255, 0.3); /* Transparente para ver o fundo */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
-            color: #ccc;
-            position: relative;
+            font-size: 0.5rem;
+            color: #1e3a8a;
+            border: 1px solid rgba(255,255,255,0.5);
+            backdrop-filter: blur(1px);
+            transform: translate(-50%, -50%); /* Centraliza no ponto X,Y */
         }
         .board-step.active {
-            background: #64748b; /* Slate 500 */
+            background: rgba(59, 130, 246, 0.8); /* Blue 500 */
             color: white;
             font-weight: bold;
+            border-color: #2563eb;
+            z-index: 2;
         }
         .pawn {
-            width: 80%;
-            height: 80%;
+            width: 130%; /* Peão um pouco maior que a casa */
+            height: 130%;
             border-radius: 50%;
             border: 2px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
             position: absolute;
-            transition: all 0.5s ease;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
         }
 
-        /* Scrollbar */
+        /* Scrollbar Azulada */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
 
-        /* Botão Neutro Escuro */
+        /* Botão Azul Gradiente */
         .btn-primary {
-            background: linear-gradient(90deg, #475569 0%, #1e293b 100%); /* Slate Gradient */
+            background: linear-gradient(90deg, #2563eb 0%, #06b6d4 100%); /* Blue to Cyan */
             color: white;
             font-weight: bold;
             border-radius: 12px;
             transition: opacity 0.2s;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
         .btn-primary:hover { opacity: 0.9; }
+
+        /* Modal de Zoom */
+        #zoom-modal {
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Estilo para o menu de mão minimizado */
+        .hand-minimized {
+            height: 60px !important; /* Altura apenas do cabeçalho */
+            overflow: hidden;
+        }
+        #hand-area {
+            transition: height 0.3s ease-in-out, transform 0.3s;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
@@ -128,56 +167,56 @@
     <!-- HEADER COM LOGO -->
     <header class="w-full max-w-4xl flex flex-col items-center mb-4 mt-2">
         <div class="glitch-effect mb-2">
-            <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md grayscale hover:grayscale-0 transition-all duration-500">
+            <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md transition-all duration-500">
         </div>
-        <div class="text-sm font-bold text-slate-500 tracking-widest uppercase bg-white/50 px-3 py-1 rounded-full border border-slate-200">Edição Sonho Ilustrado</div>
+        <div class="text-sm font-bold text-blue-600 tracking-widest uppercase bg-white/60 px-3 py-1 rounded-full border border-blue-200 shadow-sm">Edição Sonho Azul</div>
     </header>
 
     <main id="game-app" class="w-full max-w-5xl min-h-[600px] relative pb-20">
         
-        <div id="msg-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm hidden">
-            <div class="glass-panel p-8 text-center max-w-md animate-bounce-in">
-                <h3 id="msg-title" class="text-2xl title-font font-bold text-slate-700 mb-2">Carregando...</h3>
-                <p id="msg-body" class="text-slate-500">Sincronizando sonhos...</p>
+        <div id="msg-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-blue-50/90 backdrop-blur-sm hidden">
+            <div class="glass-panel p-8 text-center max-w-md animate-bounce-in border-blue-200">
+                <h3 id="msg-title" class="text-2xl title-font font-bold text-blue-700 mb-2">Carregando...</h3>
+                <p id="msg-body" class="text-blue-500">Sincronizando sonhos...</p>
             </div>
         </div>
 
         <!-- TELA DE LOGIN -->
         <div id="screen-login" class="glass-panel max-w-md mx-auto p-8 fade-in">
-            <h2 class="text-2xl title-font text-center mb-6 text-slate-800">Quem é você no sonho?</h2>
+            <h2 class="text-2xl title-font text-center mb-6 text-blue-800">Quem é você no sonho?</h2>
 
             <div class="mb-6">
-                <label class="block text-sm font-bold mb-3 text-slate-400 text-center">ESCOLHA SEU PEÃO</label>
+                <label class="block text-sm font-bold mb-3 text-blue-400 text-center">ESCOLHA SEU PEÃO</label>
                 <div id="avatar-grid" class="flex justify-center gap-4 flex-wrap">
                 </div>
             </div>
 
             <div class="mb-4">
-                <input type="text" id="player-name" class="w-full bg-white border-2 border-slate-200 rounded-xl p-3 text-center text-lg focus:outline-none focus:border-slate-400 transition-colors text-slate-700" placeholder="Seu Nome" maxlength="12">
+                <input type="text" id="player-name" class="w-full bg-white border-2 border-blue-100 rounded-xl p-3 text-center text-lg focus:outline-none focus:border-cyan-400 transition-colors text-blue-900 placeholder-blue-300" placeholder="Seu Nome" maxlength="12">
             </div>
 
             <div class="flex gap-2 mb-6">
-                <input type="text" id="room-code" class="w-2/3 bg-white border-2 border-slate-200 rounded-xl p-3 text-center uppercase tracking-widest font-mono text-slate-700" placeholder="SALA" maxlength="4">
-                <button onclick="generateRoomCode()" class="w-1/3 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 border border-slate-200">Gerar</button>
+                <input type="text" id="room-code" class="w-2/3 bg-white border-2 border-blue-100 rounded-xl p-3 text-center uppercase tracking-widest font-mono text-blue-800 placeholder-blue-300" placeholder="SALA" maxlength="4">
+                <button onclick="generateRoomCode()" class="w-1/3 bg-blue-100 text-blue-600 rounded-xl font-bold hover:bg-blue-200 border border-blue-200 transition-colors">Gerar</button>
             </div>
 
-            <button onclick="joinGame()" class="w-full btn-primary py-4 text-xl shadow-lg shadow-slate-500/20">
+            <button onclick="joinGame()" class="w-full btn-primary py-4 text-xl shadow-lg">
                 CONECTAR ⚡
             </button>
         </div>
 
         <!-- LOBBY -->
         <div id="screen-lobby" class="hidden glass-panel w-full p-6 flex flex-col items-center">
-            <div class="bg-white px-6 py-2 rounded-full border border-slate-200 mb-6 shadow-sm">
-                <span class="text-slate-400 text-xs uppercase font-bold mr-2">Código da Sala</span>
-                <span id="lobby-code" class="text-2xl font-mono font-bold text-slate-700 tracking-widest">----</span>
+            <div class="bg-white px-6 py-2 rounded-full border border-blue-100 mb-6 shadow-sm">
+                <span class="text-blue-400 text-xs uppercase font-bold mr-2">Código da Sala</span>
+                <span id="lobby-code" class="text-2xl font-mono font-bold text-blue-600 tracking-widest">----</span>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-8" id="lobby-list">
             </div>
 
-            <div class="bg-gray-100 p-4 rounded-xl border border-gray-200 text-center max-w-lg mb-6">
-                <p class="text-gray-600 text-sm">
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-center max-w-lg mb-6">
+                <p class="text-blue-800 text-sm">
                     <strong>Como Jogar:</strong> Todos recebem um tema, menos um (o Glitch).<br>
                     Jogue uma carta que combine. Descubra quem não sabe o tema!
                 </p>
@@ -186,44 +225,51 @@
             <button onclick="startGame()" id="btn-start" class="btn-primary py-3 px-12 text-lg shadow-lg hidden">
                 INICIAR JORNADA
             </button>
-            <p id="wait-host-msg" class="text-slate-400 animate-pulse">Aguardando o anfitrião iniciar...</p>
+            <p id="wait-host-msg" class="text-blue-400 animate-pulse">Aguardando o anfitrião iniciar...</p>
         </div>
 
         <!-- TELA DO JOGO -->
         <div id="screen-game" class="hidden w-full flex flex-col gap-4">
             
-            <!-- TRILHA -->
+            <!-- TRILHA / TABULEIRO -->
             <div class="glass-panel p-3 w-full relative overflow-hidden">
-                <div class="absolute top-0 left-0 bg-slate-200 px-2 py-1 text-[10px] font-bold text-slate-600 rounded-br-lg z-10">TRILHA DOS SONHOS (30)</div>
-                <div id="game-board-track" class="board-track mt-4 md:mt-2">
+                <div class="absolute top-0 left-0 bg-blue-600 px-3 py-1 text-[10px] font-bold text-white rounded-br-lg z-20 shadow-md">TRILHA (30)</div>
+                
+                <!-- Container do Tabuleiro com Imagem de Fundo -->
+                <div id="board-container" class="board-container mt-4 md:mt-2 border-2 border-white/50 relative">
+                    <!-- Imagem do Tabuleiro em tamanho real -->
+                    <img id="board-image" src="" class="w-full h-auto object-contain rounded-2xl shadow-inner" alt="Tabuleiro">
+                    <div id="game-board-track" class="board-track">
+                        <!-- Casas serão geradas aqui via JS -->
+                    </div>
                 </div>
             </div>
 
             <div class="flex flex-col md:flex-row gap-4">
                 
                 <!-- ÁREA DE INFORMAÇÃO SECRETA -->
-                <div class="glass-panel p-6 flex-1 text-center flex flex-col justify-center items-center min-h-[150px] relative overflow-hidden group">
-                    <div class="text-xs text-slate-400 uppercase tracking-widest mb-1">Sua Informação</div>
+                <div class="glass-panel p-6 flex-1 text-center flex flex-col justify-center items-center min-h-[150px] relative overflow-hidden group border-blue-200">
+                    <div class="text-xs text-blue-400 uppercase tracking-widest mb-1">Sua Informação</div>
                     
                     <div id="secret-container" class="relative w-full">
-                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-slate-800">...</h2>
+                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-blue-800">...</h2>
                     </div>
 
-                    <div class="mt-2 text-xs text-slate-500 font-bold" id="role-hint"></div>
+                    <div class="mt-2 text-xs text-blue-500 font-bold" id="role-hint"></div>
                 </div>
 
                 <!-- INFO DECK E PLACAR -->
-                <div class="glass-panel p-4 w-full md:w-1/3 flex gap-2">
-                    <div class="w-1/3 flex flex-col items-center justify-center border-r border-slate-200 pr-2">
-                        <span class="text-[10px] font-bold text-slate-400 mb-1">BARALHO</span>
-                        <div class="card-dream w-16 h-20 md:w-20 md:h-24 relative shadow-inner grayscale">
-                            <img id="deck-back-img" src="" class="w-full h-full object-cover opacity-80" alt="Deck">
+                <div class="glass-panel p-4 w-full md:w-1/3 flex gap-2 border-blue-200">
+                    <div class="w-1/3 flex flex-col items-center justify-center border-r border-blue-100 pr-2">
+                        <span class="text-[10px] font-bold text-blue-400 mb-1">BARALHO</span>
+                        <div class="card-dream w-16 h-20 md:w-20 md:h-24 relative shadow-inner">
+                            <img id="deck-back-img" src="" class="w-full h-full object-cover rounded-lg" alt="Deck">
                             <div id="deck-count" class="absolute inset-0 flex items-center justify-center font-bold text-white text-xl drop-shadow-md">?</div>
                         </div>
                     </div>
                     <div class="w-2/3 overflow-y-auto max-h-[150px] pl-2">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Viajantes</h4>
-                        <ul id="ingame-scoreboard" class="space-y-2 text-sm text-slate-700"></ul>
+                        <h4 class="text-xs font-bold text-blue-400 uppercase mb-2">Viajantes</h4>
+                        <ul id="ingame-scoreboard" class="space-y-2 text-sm text-blue-800"></ul>
                     </div>
                 </div>
             </div>
@@ -232,7 +278,7 @@
                 
                 <!-- MESA (CARTAS JOGADAS) -->
                 <div id="table-area" class="mb-6">
-                    <h3 class="text-center text-slate-600 font-bold mb-4 bg-white/50 border border-white inline-block px-4 py-1 rounded-full mx-auto block w-max shadow-sm">
+                    <h3 class="text-center text-blue-600 font-bold mb-4 bg-white/60 border border-white inline-block px-6 py-1 rounded-full mx-auto block w-max shadow-sm backdrop-blur-sm">
                         MEMÓRIAS COMPARTILHADAS
                     </h3>
                     <div id="table-grid" class="flex flex-wrap justify-center gap-4">
@@ -240,25 +286,49 @@
                 </div>
 
                 <!-- MÃO DO JOGADOR -->
-                <div id="hand-area" class="glass-panel p-4 bg-white/95 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300 border-t border-slate-200">
+                <div id="hand-area" class="glass-panel p-4 bg-white/95 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300 border-t border-blue-100 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
                     <div class="flex justify-between items-center mb-2">
-                        <div class="text-sm font-bold text-slate-600">Sua Mão</div>
-                        <button onclick="toggleHand()" class="md:hidden text-xs bg-slate-200 px-2 py-1 rounded text-slate-600">▼/▲</button>
+                        <div class="text-sm font-bold text-blue-600">Sua Mão <span class="text-xs font-normal text-gray-400 ml-2">(Clique duplo para ampliar)</span></div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleHandVisibility()" id="btn-toggle-hand" class="text-xl text-blue-600 focus:outline-none transition-transform duration-300">▼</button>
+                            <button onclick="toggleHand()" class="md:hidden text-xs bg-blue-100 px-2 py-1 rounded text-blue-600">◀▶</button>
+                        </div>
                     </div>
-                    <div id="hand-grid" class="flex gap-3 overflow-x-auto pb-2 px-1 snap-x justify-center md:justify-start">
+                    <div id="hand-content">
+                        <div id="hand-grid" class="flex gap-3 overflow-x-auto pb-2 px-1 snap-x justify-center md:justify-start h-[170px]">
+                        </div>
+                        
+                        <div class="flex gap-2 mt-2">
+                            <button id="btn-zoom-card" onclick="openZoom()" disabled class="w-1/4 bg-blue-100 text-blue-600 font-bold py-3 rounded-xl transition-colors hover:bg-blue-200">
+                                🔍
+                            </button>
+                            <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl transition-colors">
+                                JOGAR CARTA
+                            </button>
+                        </div>
                     </div>
-                    <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-full mt-2 bg-slate-300 text-white font-bold py-3 rounded-xl transition-colors">
-                        JOGAR CARTA
-                    </button>
                 </div>
 
-                <!-- VOTAÇÃO (Agora no fluxo da página, sem sobreposição) -->
-                <div id="voting-overlay" class="w-full flex flex-col items-center justify-center hidden mt-8 p-6 bg-white/95 rounded-2xl border-2 border-red-200 shadow-xl mb-48">
-                    <h2 class="text-3xl title-font font-bold text-red-600 mb-6 glitch-text">QUEM É O GLITCH?</h2>
+                <!-- VOTAÇÃO -->
+                <div id="voting-overlay" class="w-full flex flex-col items-center justify-center hidden mt-8 p-6 bg-white/90 rounded-2xl border-4 border-red-200 shadow-xl mb-48 backdrop-blur-md">
+                    <h2 class="text-3xl title-font font-bold text-red-500 mb-6 glitch-text">QUEM É O GLITCH?</h2>
                     <div id="voting-options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- MODAL DE ZOOM -->
+        <div id="zoom-modal" onclick="closeZoom()" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center hidden p-4">
+            <div class="relative max-w-lg w-full" onclick="event.stopPropagation()">
+                <button onclick="closeZoom()" class="absolute -top-12 right-0 text-white text-3xl font-bold hover:text-red-400">&times;</button>
+                <img id="zoom-img" src="" class="w-full h-auto rounded-2xl shadow-2xl border-4 border-white">
+                <div class="mt-4 flex justify-center">
+                    <button onclick="confirmPlayFromZoom()" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-transform">
+                        JOGAR ESTA CARTA
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -280,20 +350,37 @@
         };
 
         // === CONFIGURAÇÃO DE IMAGENS DO REPOSITÓRIO ===
-        // Repositório: carlossandressantos-cmyk/glitch
         const REPO_BASE = "https://github.com/carlossandressantos-cmyk/glitch/blob/main/";
         const RAW_PARAM = "?raw=true";
 
-        // Helpers para gerar URLs
         const getCardUrl = (id) => `${REPO_BASE}${id}.png${RAW_PARAM}`;
         const getAssetUrl = (name) => `${REPO_BASE}${name}${RAW_PARAM}`;
 
-        // Configuração Inicial de Assets na UI
         document.getElementById('game-logo').src = getAssetUrl('logosite.png');
         document.getElementById('deck-back-img').src = getAssetUrl('verso-cartas.png');
+        // Define a imagem do tabuleiro na tag <img>
+        document.getElementById('board-image').src = getAssetUrl('Tabuleiroglitch.png');
+        // Removido o background-image do container
+
+        // === CONFIGURAÇÃO DA TRILHA (BOARD POSITIONS) ===
+        // Coordenadas percentuais (left%, top%) recalibradas para o caminho da imagem do tabuleiro
+        const BOARD_POSITIONS = [
+            // 1-5 (Início, baixo esquerda)
+            {l: 8, t: 86}, {l: 16, t: 85}, {l: 24, t: 84}, {l: 32, t: 83}, {l: 40, t: 82}, 
+            // 6-10 (Curva ascendente direita)
+            {l: 48, t: 81}, {l: 56, t: 80}, {l: 64, t: 78}, {l: 72, t: 75}, {l: 78, t: 70},
+            // 11-15 (Curva superior direita para esquerda)
+            {l: 82, t: 63}, {l: 78, t: 56}, {l: 70, t: 52}, {l: 62, t: 50}, {l: 54, t: 49},
+            // 16-20 (Meio, esquerda para direita)
+            {l: 46, t: 49}, {l: 38, t: 50}, {l: 30, t: 52}, {l: 22, t: 55}, {l: 16, t: 60},
+            // 21-25 (Curva inferior esquerda para cima)
+            {l: 12, t: 66}, {l: 14, t: 74}, {l: 20, t: 78}, {l: 28, t: 76}, {l: 36, t: 70},
+            // 26-30 (Final, topo direita)
+            {l: 44, t: 62}, {l: 52, t: 54}, {l: 60, t: 44}, {l: 70, t: 34}, {l: 82, t: 26}
+        ];
 
         // --- DADOS DO JOGO ---
-        const TOTAL_CARDS = 127; // 127 cartas
+        const TOTAL_CARDS = 127; 
 
         const WORD_CATEGORIES = {
             natureza: ["Chuva", "Vento", "Fogo", "Gelo", "Floresta", "Montanha", "Oceano", "Lua", "Sol", "Raiz", "Sombra", "Luz"],
@@ -303,21 +390,19 @@
             fantasia: ["Dragão", "Fada", "Bruxa", "Castelo", "Magia", "Poção", "Fantasma", "Unicórnio", "Rei", "Espada"]
         };
 
-        // Avatares
         const AVATARS = [
             { id: 'cloud', icon: '☁️', color: 'bg-blue-100' },
             { id: 'star', icon: '⭐', color: 'bg-yellow-100' },
             { id: 'bolt', icon: '⚡', color: 'bg-yellow-200' },
             { id: 'heart', icon: '❤️', color: 'bg-red-100' },
-            { id: 'moon', icon: '🌙', color: 'bg-slate-200' },
-            { id: 'eye', icon: '👁️', color: 'bg-green-100' },
+            { id: 'moon', icon: '🌙', color: 'bg-indigo-100' },
+            { id: 'eye', icon: '👁️', color: 'bg-cyan-100' },
             { id: 'ghost', icon: '👻', color: 'bg-gray-200' },
             { id: 'alien', icon: '👽', color: 'bg-green-200' },
             { id: 'robot', icon: '🤖', color: 'bg-blue-200' },
             { id: 'fox', icon: '🦊', color: 'bg-orange-200' }
         ];
 
-        // --- INICIALIZAÇÃO ---
         let app, auth, db;
         let myId = null;
         let myName = "";
@@ -340,7 +425,7 @@
         function renderAvatars() {
             const grid = document.getElementById('avatar-grid');
             grid.innerHTML = AVATARS.map(av => `
-                <button onclick="selectAvatar('${av.id}')" class="w-10 h-10 md:w-12 md:h-12 rounded-full text-xl flex items-center justify-center border-2 transition-transform hover:scale-110 ${myAvatar.id === av.id ? 'border-slate-500 scale-110 shadow-lg' : 'border-transparent bg-white'}" style="background-color: ${av.id === myAvatar.id ? '' : '#fff'}">
+                <button onclick="selectAvatar('${av.id}')" class="w-10 h-10 md:w-12 md:h-12 rounded-full text-xl flex items-center justify-center border-2 transition-transform hover:scale-110 ${myAvatar.id === av.id ? 'border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200' : 'border-transparent bg-white'}" style="background-color: ${av.id === myAvatar.id ? '' : '#fff'}">
                     ${av.icon}
                 </button>
             `).join('');
@@ -376,7 +461,6 @@
             try {
                 await signInAnonymously(auth);
                 myId = auth.currentUser.uid;
-
                 docRef = doc(db, 'glitch_rooms_v2', currentRoomId);
 
                 onSnapshot(docRef, (snap) => {
@@ -396,9 +480,7 @@
         };
 
         async function createRoom() {
-            // Cria baralho (1-127)
             const deck = Array.from({length: TOTAL_CARDS}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
-            
             const initialData = {
                 roomId: currentRoomId,
                 phase: 'lobby',
@@ -418,7 +500,6 @@
         async function handleGameUpdate(data) {
             localState = data;
             
-            // Entrar na sala
             const me = data.players.find(p => p.id === myId);
             if (!me && data.phase === 'lobby') {
                 const newPlayers = [...data.players, {
@@ -428,7 +509,6 @@
                 return;
             }
 
-            // Renderiza com base na fase
             if (data.phase === 'lobby') renderLobby(data);
             else renderGame(data);
         }
@@ -439,9 +519,9 @@
             
             const list = document.getElementById('lobby-list');
             list.innerHTML = data.players.map(p => `
-                <div class="flex flex-col items-center bg-white/60 p-3 rounded-xl border border-white">
+                <div class="flex flex-col items-center bg-white/60 p-3 rounded-xl border border-blue-100">
                     <div class="text-3xl mb-1">${p.avatar.icon}</div>
-                    <div class="font-bold text-sm text-slate-800">${p.name}</div>
+                    <div class="font-bold text-sm text-blue-900">${p.name}</div>
                     ${p.isHost ? '<span class="text-[10px] bg-yellow-100 text-yellow-800 px-1 rounded border border-yellow-200">HOST</span>' : ''}
                 </div>
             `).join('');
@@ -460,7 +540,6 @@
         }
 
         window.startGame = async () => {
-            // MODO DE TESTE: Permitir 1 jogador
             if (localState.players.length < 1) return alert("Mínimo 1 jogador!");
             startRound();
         };
@@ -468,22 +547,17 @@
         async function startRound() {
             const players = [...localState.players];
             let deck = [...localState.deck];
-
-            // Se o baralho acabar (improvável com 127 cartas), recria
             if (deck.length < players.length * 6) {
                  deck = Array.from({length: TOTAL_CARDS}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
             }
 
-            // 1. Escolher Palavra
             const categories = Object.values(WORD_CATEGORIES);
             const randomCat = categories[Math.floor(Math.random() * categories.length)];
             const word = randomCat[Math.floor(Math.random() * randomCat.length)];
 
-            // 2. Escolher Glitch
             const glitchIndex = Math.floor(Math.random() * players.length);
             const glitchId = players[glitchIndex].id;
 
-            // 3. Dar Cartas (até ter 6 na mão)
             players.forEach(p => {
                 while (p.hand.length < 6 && deck.length > 0) {
                     p.hand.push(deck.pop());
@@ -506,76 +580,74 @@
             const me = data.players.find(p => p.id === myId);
             const isGlitch = (data.glitchId === myId);
 
-            // 0. Atualiza contagem do Deck
             document.getElementById('deck-count').innerText = data.deck.length;
 
-            // 1. Renderiza Tabuleiro
             renderBoardTrack(data.players);
 
-            // 2. Renderiza Segredo
             const secretContainer = document.getElementById('secret-word');
             const roleHint = document.getElementById('role-hint');
             const secretBox = document.getElementById('secret-container');
 
             if (data.phase === 'game_over') {
-                 // Fim de jogo
+                 // Fim
             } else if (data.phase === 'scoring') {
                  secretContainer.innerText = data.currentWord;
                  roleHint.innerText = data.resultMsg || "Rodada encerrada.";
-                 secretContainer.classList.remove('text-red-600', 'glitch-text');
-                 secretContainer.className = "text-3xl font-bold text-slate-800";
+                 secretContainer.classList.remove('text-red-500', 'glitch-text');
+                 secretContainer.className = "text-3xl font-bold text-blue-900";
             } else {
-                // Durante o jogo
                 if (isGlitch) {
                     secretContainer.innerHTML = "ERRO 404<br><span class='text-sm'>VOCÊ É O GLITCH</span>";
-                    secretContainer.className = "text-4xl title-font font-bold text-red-600 glitch-text leading-none";
+                    secretContainer.className = "text-4xl title-font font-bold text-red-500 glitch-text leading-none";
                     roleHint.innerText = "Disfarce! Jogue uma carta genérica.";
                     secretBox.parentElement.classList.add('border-red-200', 'bg-red-50');
                 } else {
                     secretContainer.innerText = data.currentWord;
-                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-slate-800";
+                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-blue-900";
                     roleHint.innerText = "Jogue uma carta relacionada ao tema.";
                     secretBox.parentElement.classList.remove('border-red-200', 'bg-red-50');
                 }
             }
 
-            // 3. Placar Rápido
             document.getElementById('ingame-scoreboard').innerHTML = data.players
                 .sort((a,b) => b.score - a.score)
                 .map(p => `<li class="flex justify-between"><span>${p.avatar.icon} ${p.name}</span> <span class="font-bold">${p.score}</span></li>`)
                 .join('');
 
-            // 4. Mão
             if (me) renderHand(me.hand);
 
-            // 5. Mesa
             renderTable(data.tableCards, data.players);
 
-            // 6. Botão de Ação
             const btnPlay = document.getElementById('btn-play-card');
+            const btnZoom = document.getElementById('btn-zoom-card');
             const alreadyPlayed = data.tableCards.some(c => c.ownerId === myId);
             
             if (data.phase === 'playing' && !alreadyPlayed) {
-                btnPlay.disabled = false;
+                btnPlay.disabled = !selectedCardId;
+                btnZoom.disabled = !selectedCardId; // Só habilita zoom se tiver carta
                 btnPlay.innerText = "JOGAR CARTA";
-                btnPlay.className = "w-full mt-2 bg-gradient-to-r from-slate-600 to-slate-800 text-white font-bold py-3 rounded-xl shadow-lg";
+                btnPlay.className = "w-3/4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:to-cyan-600";
+                
+                // Se não tem carta selecionada, estilo desabilitado
+                if(!selectedCardId) {
+                     btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl";
+                }
             } else if (alreadyPlayed) {
                 btnPlay.disabled = true;
+                btnZoom.disabled = true;
                 btnPlay.innerText = "AGUARDANDO OUTROS...";
-                btnPlay.className = "w-full mt-2 bg-slate-300 text-white font-bold py-3 rounded-xl";
+                btnPlay.className = "w-3/4 bg-slate-300 text-white font-bold py-3 rounded-xl";
             } else {
-                btnPlay.classList.add('hidden'); // Esconde no final
+                btnPlay.classList.add('hidden');
+                btnZoom.classList.add('hidden');
             }
 
-            // 7. Votação
             const votingOverlay = document.getElementById('voting-overlay');
-            const wasHidden = votingOverlay.classList.contains('hidden'); // Checa se estava escondido antes
+            const wasHidden = votingOverlay.classList.contains('hidden');
             
             if (data.phase === 'voting') {
                 votingOverlay.classList.remove('hidden');
                 renderVotingOptions(data);
-                
-                // Rola para baixo apenas se a votação acabou de aparecer
                 if (wasHidden) {
                     setTimeout(() => {
                         votingOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -585,28 +657,46 @@
                 votingOverlay.classList.add('hidden');
             }
 
-            // 8. Checa se todos jogaram (apenas Host executa transição)
             if (me && me.isHost && data.phase === 'playing' && data.tableCards.length === data.players.length) {
                 setTimeout(() => updateDoc(docRef, { phase: 'voting' }), 2000);
             }
         }
 
+        // --- LÓGICA DO TABULEIRO COM POSIÇÃO ABSOLUTA ---
         function renderBoardTrack(players) {
             const track = document.getElementById('game-board-track');
             track.innerHTML = '';
             
-            for(let i=1; i<=30; i++) {
+            // Loop para criar as 30 casas usando as posições pré-definidas
+            for(let i=0; i<30; i++) {
+                const pos = BOARD_POSITIONS[i]; // Pega {l, t}
+                if (!pos) continue; // Segurança se faltar posição
+
+                const cellNum = i + 1;
                 const cell = document.createElement('div');
                 cell.className = 'board-step';
-                cell.innerText = i;
+                cell.innerText = cellNum;
                 
+                // Aplica a posição
+                cell.style.left = pos.l + '%';
+                cell.style.top = pos.t + '%';
+
                 players.forEach(p => {
-                    if (p.score === i || (p.score > 30 && i === 30)) {
+                    // Se o jogador passou de 30, fica na casa 30
+                    const pScore = p.score > 30 ? 30 : p.score;
+                    // Se o jogador está na casa inicial (0), não mostra ou mostra na casa 1? 
+                    // Vamos considerar 0 como fora, 1 como primeira.
+                    
+                    if (pScore === cellNum) {
                         const pawn = document.createElement('div');
                         pawn.className = 'pawn flex items-center justify-center text-xs';
-                        pawn.style.backgroundColor = p.avatar.id === 'bolt' ? '#facc15' : '#e2e8f0';
+                        pawn.style.backgroundColor = p.avatar.id === 'bolt' ? '#facc15' : '#ffffff';
                         pawn.innerHTML = p.avatar.icon;
-                        pawn.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+                        
+                        // Pequeno deslocamento aleatório para não encavalar
+                        const offset = (Math.random() * 10) - 5;
+                        pawn.style.transform = `translate(${offset}px, ${offset}px)`;
+                        
                         cell.appendChild(pawn);
                     }
                 });
@@ -621,7 +711,7 @@
                 const fallback = "this.src='https://via.placeholder.com/150?text=Card'";
                 
                 return `
-                    <div onclick="selectCard(${id})" class="card-dream min-w-[100px] h-[140px] md:min-w-[120px] md:h-[160px] bg-gray-200 relative snap-center ${selectedCardId === id ? 'card-selected' : ''}">
+                    <div onclick="selectCard(${id})" ondblclick="openZoom()" class="card-dream min-w-[100px] h-[140px] md:min-w-[120px] md:h-[160px] bg-gray-200 relative snap-center ${selectedCardId === id ? 'card-selected ring-4 ring-cyan-400' : ''}">
                         <img src="${imgUrl}" class="w-full h-full object-cover" onerror="${fallback}">
                     </div>
                 `;
@@ -630,7 +720,44 @@
 
         window.selectCard = (id) => {
             selectedCardId = id;
-            renderHand(localState.players.find(p => p.id === myId).hand);
+            // Re-renderiza para atualizar estado dos botões
+            renderGame(localState);
+        };
+
+        // --- FUNCIONALIDADE DE MINIMIZAR MÃO ---
+        window.toggleHandVisibility = () => {
+            const handArea = document.getElementById('hand-area');
+            const btn = document.getElementById('btn-toggle-hand');
+            handArea.classList.toggle('hand-minimized');
+            // Rotaciona o ícone da seta
+            if (handArea.classList.contains('hand-minimized')) {
+                btn.style.transform = 'rotate(180deg)';
+            } else {
+                btn.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        window.toggleHand = () => {
+            const el = document.getElementById('hand-grid');
+            el.scrollLeft += 100;
+        };
+
+        // --- ZOOM LÓGICA ---
+        window.openZoom = () => {
+            if (!selectedCardId) return;
+            const modal = document.getElementById('zoom-modal');
+            const img = document.getElementById('zoom-img');
+            img.src = getCardUrl(selectedCardId);
+            modal.classList.remove('hidden');
+        };
+
+        window.closeZoom = () => {
+            document.getElementById('zoom-modal').classList.add('hidden');
+        };
+        
+        window.confirmPlayFromZoom = () => {
+            playSelectedCard();
+            closeZoom();
         };
 
         window.playSelectedCard = async () => {
@@ -672,14 +799,14 @@
             const container = document.getElementById('voting-options');
             
             if (data.votes[myId]) {
-                container.innerHTML = `<div class="col-span-3 text-center text-slate-800 bg-white/80 p-4 rounded-xl">Voto registrado! Aguardando o veredito...</div>`;
+                container.innerHTML = `<div class="col-span-3 text-center text-blue-900 bg-white/80 p-4 rounded-xl">Voto registrado! Aguardando o veredito...</div>`;
                 return;
             }
 
             container.innerHTML = data.players
                 .filter(p => p.id !== myId)
                 .map(p => `
-                <button onclick="submitVote('${p.id}')" class="flex flex-col items-center bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-red-400 hover:bg-red-50 transition-all">
+                <button onclick="submitVote('${p.id}')" class="flex flex-col items-center bg-white p-4 rounded-xl border-2 border-blue-100 hover:border-red-400 hover:bg-red-50 transition-all">
                     <div class="text-4xl mb-2">${p.avatar.icon}</div>
                     <span class="font-bold text-gray-700">${p.name}</span>
                 </button>
@@ -751,11 +878,6 @@
                 setTimeout(() => startRound(), 6000);
             }
         }
-
-        window.toggleHand = () => {
-            const el = document.getElementById('hand-grid');
-            el.scrollLeft += 100;
-        };
 
         renderAvatars();
         generateRoomCode();
