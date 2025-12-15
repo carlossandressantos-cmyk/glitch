@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLITCH - Edição Sonho Ilustrado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* TEMA DREAM / GLITCH */
+        :root {
+            --color-primary: #8b5cf6; /* Violet */
+            --color-secondary: #ec4899; /* Pink */
+            --color-accent: #06b6d4; /* Cyan */
+        }
+
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 50%, #fce7f3 100%);
+            color: #4c1d95;
+            overflow-x: hidden;
+        }
+
+        .title-font { font-family: 'Fredoka', sans-serif; }
+
+        /* Efeito de Vidro (Glassmorphism) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            border-radius: 24px;
+        }
+
+        /* Animação Glitch no Texto/Logo */
+        .glitch-effect {
+            position: relative;
+            animation: shake 3s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Cards */
+        .card-dream {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background-color: #f3e8ff;
+        }
+        .card-dream:hover {
+            transform: translateY(-8px) rotate(2deg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        .card-selected {
+            border-color: var(--color-accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3);
+        }
+
+        /* Tabuleiro (Trilha) */
+        .board-track {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+        }
+        .board-step {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #ccc;
+            position: relative;
+        }
+        .board-step.active {
+            background: #d8b4fe;
+            color: white;
+            font-weight: bold;
+        }
+        .pawn {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            font-weight: bold;
+            border-radius: 12px;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <!-- HEADER COM LOGO -->
+    <header class="w-full max-w-4xl flex flex-col items-center mb-4 mt-2">
+        <div class="glitch-effect mb-2">
+            <img id="game-logo" src="" alt="GLITCH" class="h-24 md:h-32 object-contain drop-shadow-md">
+        </div>
+        <div class="text-sm font-bold text-purple-400 tracking-widest uppercase bg-white/50 px-3 py-1 rounded-full">Edição Sonho Ilustrado</div>
+    </header>
+
+    <main id="game-app" class="w-full max-w-5xl min-h-[600px] relative pb-20">
+        
+        <div id="msg-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm hidden">
+            <div class="glass-panel p-8 text-center max-w-md animate-bounce-in">
+                <h3 id="msg-title" class="text-2xl title-font font-bold text-purple-600 mb-2">Carregando...</h3>
+                <p id="msg-body" class="text-gray-600">Sincronizando sonhos...</p>
+            </div>
+        </div>
+
+        <!-- TELA DE LOGIN -->
+        <div id="screen-login" class="glass-panel max-w-md mx-auto p-8 fade-in">
+            <h2 class="text-2xl title-font text-center mb-6 text-purple-800">Quem é você no sonho?</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-500 text-center">ESCOLHA SEU PEÃO</label>
+                <div id="avatar-grid" class="flex justify-center gap-4 flex-wrap">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="player-name" class="w-full bg-white/50 border-2 border-purple-200 rounded-xl p-3 text-center text-lg focus:outline-none focus:border-pink-400 transition-colors" placeholder="Seu Nome" maxlength="12">
+            </div>
+
+            <div class="flex gap-2 mb-6">
+                <input type="text" id="room-code" class="w-2/3 bg-white/50 border-2 border-purple-200 rounded-xl p-3 text-center uppercase tracking-widest font-mono" placeholder="SALA" maxlength="4">
+                <button onclick="generateRoomCode()" class="w-1/3 bg-purple-100 text-purple-600 rounded-xl font-bold hover:bg-purple-200">Gerar</button>
+            </div>
+
+            <button onclick="joinGame()" class="w-full btn-primary py-4 text-xl shadow-lg shadow-purple-500/30">
+                CONECTAR ⚡
+            </button>
+        </div>
+
+        <!-- LOBBY -->
+        <div id="screen-lobby" class="hidden glass-panel w-full p-6 flex flex-col items-center">
+            <div class="bg-white/50 px-6 py-2 rounded-full border border-purple-200 mb-6">
+                <span class="text-gray-500 text-xs uppercase font-bold mr-2">Código da Sala</span>
+                <span id="lobby-code" class="text-2xl font-mono font-bold text-purple-600 tracking-widest">----</span>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mb-8" id="lobby-list">
+            </div>
+
+            <div class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-center max-w-lg mb-6">
+                <p class="text-yellow-800 text-sm">
+                    <strong>Como Jogar:</strong> Todos recebem um tema, menos um (o Glitch).<br>
+                    Jogue uma carta que combine. Descubra quem não sabe o tema!
+                </p>
+            </div>
+
+            <button onclick="startGame()" id="btn-start" class="btn-primary py-3 px-12 text-lg shadow-lg hidden">
+                INICIAR JORNADA
+            </button>
+            <p id="wait-host-msg" class="text-gray-400 animate-pulse">Aguardando o anfitrião iniciar...</p>
+        </div>
+
+        <!-- TELA DO JOGO -->
+        <div id="screen-game" class="hidden w-full flex flex-col gap-4">
+            
+            <!-- TRILHA -->
+            <div class="glass-panel p-3 w-full relative overflow-hidden">
+                <div class="absolute top-0 left-0 bg-purple-100 px-2 py-1 text-[10px] font-bold text-purple-800 rounded-br-lg z-10">TRILHA DOS SONHOS (30)</div>
+                <div id="game-board-track" class="board-track mt-4 md:mt-2">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                
+                <!-- ÁREA DE INFORMAÇÃO SECRETA -->
+                <div class="glass-panel p-6 flex-1 text-center flex flex-col justify-center items-center min-h-[150px] relative overflow-hidden group">
+                    <div class="text-xs text-gray-500 uppercase tracking-widest mb-1">Sua Informação</div>
+                    
+                    <div id="secret-container" class="relative w-full">
+                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-gray-800">...</h2>
+                    </div>
+
+                    <div class="mt-2 text-xs text-purple-400 font-bold" id="role-hint"></div>
+                </div>
+
+                <!-- INFO DECK E PLACAR -->
+                <div class="glass-panel p-4 w-full md:w-1/3 flex gap-2">
+                    <div class="w-1/3 flex flex-col items-center justify-center border-r border-gray-200 pr-2">
+                        <span class="text-[10px] font-bold text-gray-400 mb-1">BARALHO</span>
+                        <div class="card-dream w-16 h-20 md:w-20 md:h-24 relative shadow-inner">
+                            <img id="deck-back-img" src="" class="w-full h-full object-cover opacity-80" alt="Deck">
+                            <div id="deck-count" class="absolute inset-0 flex items-center justify-center font-bold text-white text-xl drop-shadow-md">?</div>
+                        </div>
+                    </div>
+                    <div class="w-2/3 overflow-y-auto max-h-[150px] pl-2">
+                        <h4 class="text-xs font-bold text-gray-400 uppercase mb-2">Viajantes</h4>
+                        <ul id="ingame-scoreboard" class="space-y-2 text-sm"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="action-area" class="flex-grow min-h-[400px] relative">
+                
+                <!-- MESA (CARTAS JOGADAS) -->
+                <div id="table-area" class="mb-6">
+                    <h3 class="text-center text-purple-800 font-bold mb-4 bg-white/30 inline-block px-4 py-1 rounded-full mx-auto block w-max">
+                        MEMÓRIAS COMPARTILHADAS
+                    </h3>
+                    <div id="table-grid" class="flex flex-wrap justify-center gap-4">
+                    </div>
+                </div>
+
+                <!-- MÃO DO JOGADOR -->
+                <div id="hand-area" class="glass-panel p-4 bg-white/80 fixed bottom-0 left-0 right-0 z-40 transform transition-transform duration-300">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-sm font-bold text-gray-600">Sua Mão</div>
+                        <button onclick="toggleHand()" class="md:hidden text-xs bg-gray-200 px-2 py-1 rounded">▼/▲</button>
+                    </div>
+                    <div id="hand-grid" class="flex gap-3 overflow-x-auto pb-2 px-1 snap-x justify-center md:justify-start">
+                    </div>
+                    <button id="btn-play-card" onclick="playSelectedCard()" disabled class="w-full mt-2 bg-gray-300 text-white font-bold py-3 rounded-xl transition-colors">
+                        JOGAR CARTA
+                    </button>
+                </div>
+
+                <!-- VOTAÇÃO -->
+                <div id="voting-overlay" class="absolute inset-0 bg-white/90 z-30 flex flex-col items-center justify-center hidden rounded-xl backdrop-blur-md">
+                    <h2 class="text-3xl title-font font-bold text-red-500 mb-6 glitch-text">QUEM É O GLITCH?</h2>
+                    <div id="voting-options" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, setDoc, getDoc, initializeFirestore, memoryLocalCache } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // === 1. CONFIGURAÇÃO FIREBASE DO USUÁRIO ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8S_jtARH5Of7NP0XsJb4B0OkMQ_kCeaw",
+            authDomain: "glitch-83b82.firebaseapp.com",
+            projectId: "glitch-83b82",
+            storageBucket: "glitch-83b82.firebasestorage.app",
+            messagingSenderId: "92237578484",
+            appId: "1:92237578484:web:670bc21897fd1792f9dea1"
+        };
+
+        // === CONFIGURAÇÃO DE IMAGENS DO REPOSITÓRIO ===
+        // Repositório: carlossandressantos-cmyk/glitch
+        const REPO_BASE = "https://github.com/carlossandressantos-cmyk/glitch/blob/main/";
+        const RAW_PARAM = "?raw=true";
+
+        // Helpers para gerar URLs
+        const getCardUrl = (id) => `${REPO_BASE}${id}.png${RAW_PARAM}`;
+        const getAssetUrl = (name) => `${REPO_BASE}${name}${RAW_PARAM}`;
+
+        // Configuração Inicial de Assets na UI
+        document.getElementById('game-logo').src = getAssetUrl('logosite.png');
+        document.getElementById('deck-back-img').src = getAssetUrl('verso-cartas.png');
+
+        // --- DADOS DO JOGO ---
+        const TOTAL_CARDS = 127; // 127 cartas
+
+        const WORD_CATEGORIES = {
+            natureza: ["Chuva", "Vento", "Fogo", "Gelo", "Floresta", "Montanha", "Oceano", "Lua", "Sol", "Raiz", "Sombra", "Luz"],
+            casa: ["Janela", "Porta", "Cama", "Chave", "Espelho", "Relógio", "Telefone", "Escada", "Carta", "Cadeira", "Faca"],
+            abstrato: ["Amor", "Medo", "Raiva", "Sonho", "Pesadelo", "Mentira", "Segredo", "Tempo", "Silêncio", "Sorte", "Ideia"],
+            lugares: ["Viagem", "Festa", "Escola", "Guerra", "Paz", "Circo", "Praia", "Cidade", "Hospital", "Cinema", "Música"],
+            fantasia: ["Dragão", "Fada", "Bruxa", "Castelo", "Magia", "Poção", "Fantasma", "Unicórnio", "Rei", "Espada"]
+        };
+
+        // Avatares
+        const AVATARS = [
+            { id: 'cloud', icon: '☁️', color: 'bg-blue-200' },
+            { id: 'star', icon: '⭐', color: 'bg-yellow-200' },
+            { id: 'bolt', icon: '⚡', color: 'bg-yellow-400' },
+            { id: 'heart', icon: '❤️', color: 'bg-red-200' },
+            { id: 'moon', icon: '🌙', color: 'bg-purple-200' },
+            { id: 'eye', icon: '👁️', color: 'bg-green-200' },
+            { id: 'ghost', icon: '👻', color: 'bg-gray-200' },
+            { id: 'alien', icon: '👽', color: 'bg-green-400' },
+            { id: 'robot', icon: '🤖', color: 'bg-blue-400' },
+            { id: 'fox', icon: '🦊', color: 'bg-orange-300' }
+        ];
+
+        // --- INICIALIZAÇÃO ---
+        let app, auth, db;
+        let myId = null;
+        let myName = "";
+        let myAvatar = AVATARS[0];
+        let currentRoomId = null;
+        let docRef = null;
+        let localState = null;
+        let selectedCardId = null;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = initializeFirestore(app, { localCache: memoryLocalCache() });
+        } catch (e) {
+            console.error("Erro Firebase:", e);
+        }
+
+        // --- UI FUNCTIONS ---
+        
+        function renderAvatars() {
+            const grid = document.getElementById('avatar-grid');
+            grid.innerHTML = AVATARS.map(av => `
+                <button onclick="selectAvatar('${av.id}')" class="w-10 h-10 md:w-12 md:h-12 rounded-full text-xl flex items-center justify-center border-2 transition-transform hover:scale-110 ${myAvatar.id === av.id ? 'border-purple-600 scale-110 shadow-lg' : 'border-transparent bg-white'}" style="background-color: ${av.id === myAvatar.id ? '' : '#fff'}">
+                    ${av.icon}
+                </button>
+            `).join('');
+        }
+        window.selectAvatar = (id) => {
+            myAvatar = AVATARS.find(a => a.id === id);
+            renderAvatars();
+        };
+
+        window.generateRoomCode = () => {
+            const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+            document.getElementById('room-code').value = code;
+        };
+
+        function showScreen(screenId) {
+            ['screen-login', 'screen-lobby', 'screen-game'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        // --- GAME LOGIC ---
+
+        window.joinGame = async () => {
+            const name = document.getElementById('player-name').value.trim();
+            const code = document.getElementById('room-code').value.trim().toUpperCase();
+            
+            if (!name || code.length < 3) return alert("Preencha nome e sala!");
+            
+            myName = name;
+            currentRoomId = code;
+
+            try {
+                await signInAnonymously(auth);
+                myId = auth.currentUser.uid;
+
+                docRef = doc(db, 'glitch_rooms_v2', currentRoomId);
+
+                onSnapshot(docRef, (snap) => {
+                    if (!snap.exists()) {
+                        createRoom();
+                    } else {
+                        handleGameUpdate(snap.data());
+                    }
+                }, (error) => {
+                    console.error("Erro no listener:", error);
+                    alert("Erro ao conectar na sala. Verifique o console.");
+                });
+            } catch (err) {
+                alert("Erro ao entrar: " + err.message);
+                console.error(err);
+            }
+        };
+
+        async function createRoom() {
+            // Cria baralho (1-127)
+            const deck = Array.from({length: TOTAL_CARDS}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+            
+            const initialData = {
+                roomId: currentRoomId,
+                phase: 'lobby',
+                players: [{
+                    id: myId, name: myName, avatar: myAvatar, score: 0, hand: [], isHost: true
+                }],
+                deck: deck,
+                currentWord: "",
+                glitchId: null,
+                tableCards: [],
+                votes: {},
+                turnIndex: 0
+            };
+            await setDoc(docRef, initialData);
+        }
+
+        async function handleGameUpdate(data) {
+            localState = data;
+            
+            // Entrar na sala
+            const me = data.players.find(p => p.id === myId);
+            if (!me && data.phase === 'lobby') {
+                const newPlayers = [...data.players, {
+                    id: myId, name: myName, avatar: myAvatar, score: 0, hand: [], isHost: false
+                }];
+                await updateDoc(docRef, { players: newPlayers });
+                return;
+            }
+
+            // Renderiza com base na fase
+            if (data.phase === 'lobby') renderLobby(data);
+            else renderGame(data);
+        }
+
+        function renderLobby(data) {
+            showScreen('screen-lobby');
+            document.getElementById('lobby-code').innerText = data.roomId;
+            
+            const list = document.getElementById('lobby-list');
+            list.innerHTML = data.players.map(p => `
+                <div class="flex flex-col items-center bg-white/60 p-3 rounded-xl border border-white">
+                    <div class="text-3xl mb-1">${p.avatar.icon}</div>
+                    <div class="font-bold text-sm text-purple-900">${p.name}</div>
+                    ${p.isHost ? '<span class="text-[10px] bg-yellow-200 px-1 rounded">HOST</span>' : ''}
+                </div>
+            `).join('');
+
+            const amIHost = data.players.find(p => p.id === myId)?.isHost;
+            const btn = document.getElementById('btn-start');
+            const msg = document.getElementById('wait-host-msg');
+            
+            if (amIHost) {
+                btn.classList.remove('hidden');
+                msg.classList.add('hidden');
+            } else {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+            }
+        }
+
+        window.startGame = async () => {
+            // MODO DE TESTE: Permitir 1 jogador
+            if (localState.players.length < 1) return alert("Mínimo 1 jogador!");
+            startRound();
+        };
+
+        async function startRound() {
+            const players = [...localState.players];
+            let deck = [...localState.deck];
+
+            // Se o baralho acabar (improvável com 127 cartas), recria
+            if (deck.length < players.length * 6) {
+                 deck = Array.from({length: TOTAL_CARDS}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+            }
+
+            // 1. Escolher Palavra
+            const categories = Object.values(WORD_CATEGORIES);
+            const randomCat = categories[Math.floor(Math.random() * categories.length)];
+            const word = randomCat[Math.floor(Math.random() * randomCat.length)];
+
+            // 2. Escolher Glitch
+            const glitchIndex = Math.floor(Math.random() * players.length);
+            const glitchId = players[glitchIndex].id;
+
+            // 3. Dar Cartas (até ter 6 na mão)
+            players.forEach(p => {
+                while (p.hand.length < 6 && deck.length > 0) {
+                    p.hand.push(deck.pop());
+                }
+            });
+
+            await updateDoc(docRef, {
+                phase: 'playing',
+                currentWord: word,
+                glitchId: glitchId,
+                players: players,
+                deck: deck,
+                tableCards: [],
+                votes: {}
+            });
+        }
+
+        function renderGame(data) {
+            showScreen('screen-game');
+            const me = data.players.find(p => p.id === myId);
+            const isGlitch = (data.glitchId === myId);
+
+            // 0. Atualiza contagem do Deck
+            document.getElementById('deck-count').innerText = data.deck.length;
+
+            // 1. Renderiza Tabuleiro
+            renderBoardTrack(data.players);
+
+            // 2. Renderiza Segredo
+            const secretContainer = document.getElementById('secret-word');
+            const roleHint = document.getElementById('role-hint');
+            const secretBox = document.getElementById('secret-container');
+
+            if (data.phase === 'game_over') {
+                 // Fim de jogo
+            } else if (data.phase === 'scoring') {
+                 secretContainer.innerText = data.currentWord;
+                 roleHint.innerText = data.resultMsg || "Rodada encerrada.";
+                 secretContainer.classList.remove('text-red-500', 'glitch-text');
+                 secretContainer.className = "text-3xl font-bold text-purple-700";
+            } else {
+                // Durante o jogo
+                if (isGlitch) {
+                    secretContainer.innerHTML = "ERRO 404<br><span class='text-sm'>VOCÊ É O GLITCH</span>";
+                    secretContainer.className = "text-4xl title-font font-bold text-red-500 glitch-text leading-none";
+                    roleHint.innerText = "Disfarce! Jogue uma carta genérica.";
+                    secretBox.parentElement.classList.add('border-red-400', 'bg-red-50');
+                } else {
+                    secretContainer.innerText = data.currentWord;
+                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-purple-700";
+                    roleHint.innerText = "Jogue uma carta relacionada ao tema.";
+                    secretBox.parentElement.classList.remove('border-red-400', 'bg-red-50');
+                }
+            }
+
+            // 3. Placar Rápido
+            document.getElementById('ingame-scoreboard').innerHTML = data.players
+                .sort((a,b) => b.score - a.score)
+                .map(p => `<li class="flex justify-between"><span>${p.avatar.icon} ${p.name}</span> <span class="font-bold">${p.score}</span></li>`)
+                .join('');
+
+            // 4. Mão
+            if (me) renderHand(me.hand);
+
+            // 5. Mesa
+            renderTable(data.tableCards, data.players);
+
+            // 6. Botão de Ação
+            const btnPlay = document.getElementById('btn-play-card');
+            const alreadyPlayed = data.tableCards.some(c => c.ownerId === myId);
+            
+            if (data.phase === 'playing' && !alreadyPlayed) {
+                btnPlay.disabled = false;
+                btnPlay.innerText = "JOGAR CARTA";
+                btnPlay.className = "w-full mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl shadow-lg";
+            } else if (alreadyPlayed) {
+                btnPlay.disabled = true;
+                btnPlay.innerText = "AGUARDANDO OUTROS...";
+                btnPlay.className = "w-full mt-2 bg-gray-300 text-white font-bold py-3 rounded-xl";
+            } else {
+                btnPlay.classList.add('hidden'); // Esconde no final
+            }
+
+            // 7. Votação
+            const votingOverlay = document.getElementById('voting-overlay');
+            if (data.phase === 'voting') {
+                votingOverlay.classList.remove('hidden');
+                renderVotingOptions(data);
+            } else {
+                votingOverlay.classList.add('hidden');
+            }
+
+            // 8. Checa se todos jogaram (apenas Host executa transição)
+            if (me && me.isHost && data.phase === 'playing' && data.tableCards.length === data.players.length) {
+                setTimeout(() => updateDoc(docRef, { phase: 'voting' }), 2000);
+            }
+        }
+
+        function renderBoardTrack(players) {
+            const track = document.getElementById('game-board-track');
+            track.innerHTML = '';
+            
+            for(let i=1; i<=30; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'board-step';
+                cell.innerText = i;
+                
+                players.forEach(p => {
+                    if (p.score === i || (p.score > 30 && i === 30)) {
+                        const pawn = document.createElement('div');
+                        pawn.className = 'pawn flex items-center justify-center text-xs';
+                        pawn.style.backgroundColor = p.avatar.id === 'bolt' ? '#facc15' : '#e9d5ff';
+                        pawn.innerHTML = p.avatar.icon;
+                        pawn.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+                        cell.appendChild(pawn);
+                    }
+                });
+                track.appendChild(cell);
+            }
+        }
+
+        function renderHand(handIds) {
+            const container = document.getElementById('hand-grid');
+            container.innerHTML = handIds.map(id => {
+                const imgUrl = getCardUrl(id);
+                const fallback = "this.src='https://via.placeholder.com/150?text=Card'";
+                
+                return `
+                    <div onclick="selectCard(${id})" class="card-dream min-w-[100px] h-[140px] md:min-w-[120px] md:h-[160px] bg-gray-200 relative snap-center ${selectedCardId === id ? 'card-selected' : ''}">
+                        <img src="${imgUrl}" class="w-full h-full object-cover" onerror="${fallback}">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.selectCard = (id) => {
+            selectedCardId = id;
+            renderHand(localState.players.find(p => p.id === myId).hand);
+        };
+
+        window.playSelectedCard = async () => {
+            if (!selectedCardId) return alert("Selecione uma carta!");
+            
+            const me = localState.players.find(p => p.id === myId);
+            const newHand = me.hand.filter(c => c !== selectedCardId);
+            const newTable = [...localState.tableCards, { ownerId: myId, cardId: selectedCardId }];
+            
+            const newPlayers = localState.players.map(p => p.id === myId ? {...p, hand: newHand} : p);
+
+            await updateDoc(docRef, {
+                tableCards: newTable,
+                players: newPlayers
+            });
+            selectedCardId = null;
+        };
+
+        function renderTable(cards, players) {
+            const grid = document.getElementById('table-grid');
+            grid.innerHTML = cards.map(c => {
+                const owner = players.find(p => p.id === c.ownerId);
+                const imgUrl = getCardUrl(c.cardId);
+                
+                return `
+                    <div class="relative group animate-bounce-in">
+                        <div class="card-dream w-24 h-32 md:w-32 md:h-44 bg-gray-300">
+                             <img src="${imgUrl}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white px-2 py-1 rounded-full text-[10px] shadow border font-bold whitespace-nowrap z-20">
+                            ${owner.avatar.icon} ${owner.name}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderVotingOptions(data) {
+            const container = document.getElementById('voting-options');
+            
+            if (data.votes[myId]) {
+                container.innerHTML = `<div class="col-span-3 text-center text-purple-800 bg-white/80 p-4 rounded-xl">Voto registrado! Aguardando o veredito...</div>`;
+                return;
+            }
+
+            container.innerHTML = data.players
+                .filter(p => p.id !== myId)
+                .map(p => `
+                <button onclick="submitVote('${p.id}')" class="flex flex-col items-center bg-white p-4 rounded-xl border-2 border-purple-100 hover:border-red-400 hover:bg-red-50 transition-all">
+                    <div class="text-4xl mb-2">${p.avatar.icon}</div>
+                    <span class="font-bold text-gray-700">${p.name}</span>
+                </button>
+            `).join('');
+        }
+
+        window.submitVote = async (targetId) => {
+            const newVotes = { ...localState.votes, [myId]: targetId };
+            await updateDoc(docRef, { votes: newVotes });
+
+            if (localState.players.find(p => p.id === myId).isHost) {
+                if (Object.keys(newVotes).length === localState.players.length) {
+                    setTimeout(calculateResults, 1000);
+                }
+            }
+        };
+
+        async function calculateResults() {
+            const players = [...localState.players];
+            const glitchId = localState.glitchId;
+            const votes = localState.votes;
+            
+            let voteCounts = {};
+            players.forEach(p => voteCounts[p.id] = 0);
+            Object.values(votes).forEach(target => voteCounts[target] = (voteCounts[target] || 0) + 1);
+
+            let maxVotes = 0;
+            let accusedId = null;
+            Object.entries(voteCounts).forEach(([pid, count]) => {
+                if (count > maxVotes) {
+                    maxVotes = count;
+                    accusedId = pid;
+                } else if (count === maxVotes) {
+                    accusedId = null;
+                }
+            });
+
+            let msg = "";
+            const glitch = players.find(p => p.id === glitchId);
+            const accused = players.find(p => p.id === accusedId);
+
+            if (accusedId === glitchId) {
+                msg = `GLITCH PEGO! (${glitch.name})`;
+                players.forEach(p => {
+                    if (votes[p.id] === glitchId) p.score += 2;
+                });
+            } else {
+                msg = `GLITCH ESCAPOU! Era ${glitch.name}.`;
+                glitch.score += 3;
+                
+                if (accusedId && accusedId !== glitchId) {
+                    msg += ` ${accused.name} foi acusado injustamente!`;
+                    glitch.score += 1;
+                }
+            }
+
+            const winner = players.find(p => p.score >= 30);
+            const nextPhase = winner ? 'game_over' : 'scoring';
+
+            if (winner) msg = `JOGO ACABOU! ${winner.name} VENCEU!`;
+
+            await updateDoc(docRef, {
+                players: players,
+                phase: nextPhase,
+                resultMsg: msg
+            });
+
+            if (!winner) {
+                setTimeout(() => startRound(), 6000);
+            }
+        }
+
+        window.toggleHand = () => {
+            const el = document.getElementById('hand-grid');
+            el.scrollLeft += 100;
+        };
+
+        renderAvatars();
+        generateRoomCode();
+
+    </script>
+</body>
+</html>
