@@ -277,7 +277,8 @@
                     <div class="text-xs text-blue-400 uppercase tracking-widest mb-1">Sua Informação</div>
                     
                     <div id="secret-container" class="relative w-full">
-                        <h2 id="secret-word" class="text-3xl md:text-5xl title-font font-bold text-blue-800">...</h2>
+                        <!-- Fonte ajustada para frases mais longas: text-2xl md:text-4xl -->
+                        <h2 id="secret-word" class="text-2xl md:text-4xl title-font font-bold text-blue-800 leading-tight px-4">...</h2>
                     </div>
 
                     <div class="mt-2 text-xs text-blue-500 font-bold" id="role-hint"></div>
@@ -530,12 +531,38 @@
         // --- DADOS DO JOGO ---
         const TOTAL_CARDS = 127; 
 
+        // NOVAS CATEGORIAS BASEADAS EM FRASES E SITUAÇÕES
         const WORD_CATEGORIES = {
-            natureza: ["Chuva", "Vento", "Fogo", "Gelo", "Floresta", "Montanha", "Oceano", "Lua", "Sol", "Raiz", "Sombra", "Luz"],
-            casa: ["Janela", "Porta", "Cama", "Chave", "Espelho", "Relógio", "Telefone", "Escada", "Carta", "Cadeira", "Faca"],
-            abstrato: ["Amor", "Medo", "Raiva", "Sonho", "Pesadelo", "Mentira", "Segredo", "Tempo", "Silêncio", "Sorte", "Ideia"],
-            lugares: ["Viagem", "Festa", "Escola", "Guerra", "Paz", "Circo", "Praia", "Cidade", "Hospital", "Cinema", "Música"],
-            fantasia: ["Dragão", "Fada", "Bruxa", "Castelo", "Magia", "Poção", "Fantasma", "Unicórnio", "Rei", "Espada"]
+            cotidiano: [
+                "Segunda-feira de manhã.", "Esqueci o fogão ligado.", "A internet caiu na hora H.", 
+                "Perdi o ônibus de novo.", "O cachorro comeu meu dever de casa.", "Fila do banco no dia de pagamento.", 
+                "Isso não vai acabar bem.", "Tentando disfarçar o sono.", "Quando a visita não vai embora.", 
+                "Dieta começando amanhã.", "Perdido no supermercado.", "Um barulho estranho na cozinha à noite."
+            ],
+            poetico: [
+                "O lugar onde os sonhos vivem.", "Um segredo guardado a sete chaves.", "O silêncio gritou alto.", 
+                "Voando sem tirar os pés do chão.", "Uma lembrança de infância.", "Além do horizonte.", 
+                "O tempo parou por um instante.", "Dançando na chuva.", "Uma ideia brilhante.", 
+                "O outro lado do espelho.", "Esperando por um milagre.", "A cor da felicidade."
+            ],
+            aventura: [
+                "Fugindo do perigo.", "Encontrando um tesouro perdido.", "Uma viagem sem volta.", 
+                "O rei da floresta.", "Caindo no buraco do coelho.", "Preparar, apontar, fogo!", 
+                "O último sobrevivente.", "Monstros debaixo da cama.", "Um convite para o desconhecido.", 
+                "A batalha final.", "Perdido no espaço.", "Magia fora de controle."
+            ],
+            expressao: [
+                "Eu te avisei!", "Não olhe para trás.", "Era uma vez...", 
+                "Só mais cinco minutos.", "Você não vai acreditar no que eu vi.", "Isso é música para os meus ouvidos.", 
+                "A grama do vizinho é sempre mais verde.", "Chorando sobre o leite derramado.", "Rindo para não chorar.", 
+                "Fingindo costume.", "Agora é tarde demais.", "Mentira tem perna curta."
+            ],
+            emocao: [
+                "Um amor impossível.", "O medo do escuro.", "Explodindo de alegria.", 
+                "Uma saudade que aperta.", "A calmaria antes da tempestade.", "Sozinho na multidão.", 
+                "Vontade de sumir.", "Orgulho ferido.", "Paz interior.", 
+                "Confusão mental.", "Um grito de liberdade.", "A surpresa perfeita."
+            ]
         };
 
         const AVATARS = [
@@ -751,7 +778,7 @@
                     secretBox.parentElement.classList.add('border-red-200', 'bg-red-50');
                 } else {
                     secretContainer.innerText = data.currentWord;
-                    secretContainer.className = "text-4xl md:text-5xl title-font font-bold text-blue-900";
+                    secretContainer.className = "text-2xl md:text-4xl title-font font-bold text-blue-900 leading-tight px-4";
                     roleHint.innerText = "Jogue uma carta relacionada ao tema.";
                     secretBox.parentElement.classList.remove('border-red-200', 'bg-red-50');
                 }
